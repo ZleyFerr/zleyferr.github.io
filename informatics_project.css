@@ -1,5 +1,5 @@
 body {
-    background:url("../Code/images/background1.png");
+    background:url("https://sun9-60.userapi.com/impg/e50sKl6OBswRCVwEzgB7Y31JIQv39odl6yxwvA/nQD88aMVgvU.jpg?size=1920x1080&quality=95&sign=b2875bf4de7836e796f5b6e146bbc817&type=album");
     font-family: Arial;
     line-height: 1.2;
     margin: auto;
@@ -186,9 +186,9 @@ body {
         cursor: pointer;
         position: relative;
         left:1160px;
-        top:910px;
+        top:880px;
         display: inline-block;
-        font-size: 70%;
+        font-size: 60%;
         font-weight: 700;
         color: rgb(0, 0, 0);
         text-decoration: none;
@@ -254,3 +254,45 @@ body {
        text-shadow: 4px 0px 10px rgb(241, 42, 182);
        font-weight: 700;
       }
+     .itsme5 {
+        width: 400px;
+        height: 400px;
+        margin: 0px 0px;
+        border:1px solid black; 
+        background-color:bisque;
+        position: relative;
+        left:390px;
+        top: 165px;
+        border-radius: 10%;
+    }
+    .buttonback1 {
+        position: relative;
+        cursor: pointer;
+        left:650px;
+        top:350px;
+        display: inline-block;
+        font-size: 90%;
+        font-weight: 700;
+        color: rgb(255, 255, 255);
+        text-decoration: none;
+        text-shadow: 0 -1px 2px rgba(0,0,0,.2);
+        padding: 1em 5em;
+        outline: none;
+        border-radius: 3px;
+        background: linear-gradient(rgb(110,112,120), rgb(81,81,86)) rgb(110,112,120);
+        box-shadow:
+         0 1px rgba(255,255,255,.2) inset,
+         0 3px 5px rgba(0,1,6,.5),
+         0 0 1px 1px rgba(0,1,6,.2);
+        transition: .2s ease-in-out;
+      }
+    .buttonback1:hover:not(:active) {
+      background: linear-gradient(rgb(126,126,134), rgb(70,71,76)) rgb(126,126,134);
+    }
+    .buttonback1:active {
+      background: linear-gradient(rgb(76,77,82), rgb(56,57,62)) rgb(76,77,82);
+      box-shadow:
+       0 0 1px rgba(0,0,0,.5) inset,
+       0 2px 3px rgba(0,0,0,.5) inset,
+       0 1px 1px rgba(255,255,255,.1);
+    }
