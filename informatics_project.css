@@ -1,0 +1,256 @@
+body {
+    background:url("../Code/images/background1.png");
+    font-family: Arial;
+    line-height: 1.2;
+    margin: auto;
+}
+
+.titleh1 {
+    position: relative;
+    font-size: 64px;
+    color:rgb(255, 255, 255);
+    left:750px;
+    width:400px;
+    text-shadow: 4px 0px 10px rgb(241, 42, 182);
+}
+
+.itsme {
+    width: 400px;
+    height: 400px;
+    margin: 0px 0px;
+    border:1px solid black; 
+    background-color:bisque;
+    position: relative;
+    top: 210px;
+    border-radius: 10%;
+    transform: rotate(-10deg);
+    left:320px;
+}
+
+.itsme1 {
+    width: 400px;
+    height: 400px;
+    margin: 0px 0;
+    border:1px solid black;
+    background-color:bisque;
+    position: relative;
+    left:355px;
+    border-radius: 10%;
+    top:165px;
+}
+
+.itsme2 {
+    width: 400px;
+    height: 400px;
+    margin: 0px 0px;
+    border:1px solid black; 
+    background-color:bisque;
+    position: relative;
+    left:390px;
+    top: 210px;
+    border-radius: 10%;
+    transform: rotate(10deg);
+}
+
+.my2022 {
+    position:relative;
+    left:915px;
+    width:10px;
+    font-size:45px;
+    top:110px;
+    color: purple;
+    text-shadow: 4px 0px 10px rgb(241, 42, 182);
+}
+
+.my2020 {
+    width:10px;
+    position:relative;
+    left:520px;
+    font-size:45px;
+    top:60px;
+    transform: rotate(-10deg);
+    color: purple;
+    text-shadow: 4px 0px 10px rgb(241, 42, 182);
+}
+
+.my2021 {
+    width:10px;
+    position:relative;
+    left:1310px;
+    font-size:45px;
+    bottom:55px;
+    transform: rotate(10deg);
+    color: purple;
+    text-shadow: 4px 0px 10px rgb(241, 42, 182);
+}
+
+
+.buttonaboutme {
+        position: relative;
+        left:854px;
+        cursor: pointer;
+        top:850px;
+        display: inline-block;
+        font-size: 90%;
+        font-weight: 700;
+        color: rgb(255, 255, 255);
+        text-decoration: none;
+        text-shadow: 0 -1px 2px rgba(0,0,0,.2);
+        padding: 1em 5em;
+        outline: none;
+        border-radius: 3px;
+        background: linear-gradient(rgb(110,112,120), rgb(81,81,86)) rgb(110,112,120);
+        box-shadow:
+         0 1px rgba(255,255,255,.2) inset,
+         0 3px 5px rgba(0,1,6,.5),
+         0 0 1px 1px rgba(0,1,6,.2);
+        transition: .2s ease-in-out;
+      }
+      .buttonaboutme:hover:not(:active) {
+        background: linear-gradient(rgb(126,126,134), rgb(70,71,76)) rgb(126,126,134);
+      }
+      .buttonaboutme:active {
+        background: linear-gradient(rgb(76,77,82), rgb(56,57,62)) rgb(76,77,82);
+        box-shadow:
+         0 0 1px rgba(0,0,0,.5) inset,
+         0 2px 3px rgba(0,0,0,.5) inset,
+         0 1px 1px rgba(255,255,255,.1);
+      }
+
+
+      .buttonportfolio {
+        position: relative;
+        cursor: pointer;
+        left:800px;
+        top:850px;
+        display: inline-block;
+        font-size: 90%;
+        font-weight: 700;
+        color: rgb(255, 255, 255);
+        text-decoration: none;
+        text-shadow: 0 -1px 2px rgba(0,0,0,.2);
+        padding: 1em 5em;
+        outline: none;
+        border-radius: 3px;
+        background: linear-gradient(rgb(110,112,120), rgb(81,81,86)) rgb(110,112,120);
+        box-shadow:
+         0 1px rgba(255,255,255,.2) inset,
+         0 3px 5px rgba(0,1,6,.5),
+         0 0 1px 1px rgba(0,1,6,.2);
+        transition: .2s ease-in-out;
+      }
+      .buttonportfolio:hover:not(:active) {
+        background: linear-gradient(rgb(126,126,134), rgb(70,71,76)) rgb(126,126,134);
+      }
+      .buttonportfolio:active {
+        background: linear-gradient(rgb(76,77,82), rgb(56,57,62)) rgb(76,77,82);
+        box-shadow:
+         0 0 1px rgba(0,0,0,.5) inset,
+         0 2px 3px rgba(0,0,0,.5) inset,
+         0 1px 1px rgba(255,255,255,.1);
+      }
+
+      .buttonhobbi {
+        position: relative;
+        cursor: pointer;
+        left:235px;
+        top:850px;
+        display: inline-block;
+        font-size: 90%;
+        font-weight: 700;
+        color: rgb(255, 255, 255);
+        text-decoration: none;
+        text-shadow: 0 -1px 2px rgba(0,0,0,.2);
+        padding: 1em 5em;
+        outline: none;
+        border-radius: 3px;
+        background: linear-gradient(rgb(110,112,120), rgb(81,81,86)) rgb(110,112,120);
+        box-shadow:
+         0 1px rgba(255,255,255,.2) inset,
+         0 3px 5px rgba(0,1,6,.5),
+         0 0 1px 1px rgba(0,1,6,.2);
+        transition: .2s ease-in-out;
+      }
+      .buttonhobbi:hover:not(:active) {
+        background: linear-gradient(rgb(126,126,134), rgb(70,71,76)) rgb(126,126,134);
+      }
+      .buttonhobbi:active {
+        background: linear-gradient(rgb(76,77,82), rgb(56,57,62)) rgb(76,77,82);
+        box-shadow:
+         0 0 1px rgba(0,0,0,.5) inset,
+         0 2px 3px rgba(0,0,0,.5) inset,
+         0 1px 1px rgba(255,255,255,.1);
+      }
+
+      .secretbutton {
+        cursor: pointer;
+        position: relative;
+        left:1160px;
+        top:910px;
+        display: inline-block;
+        font-size: 70%;
+        font-weight: 700;
+        color: rgb(0, 0, 0);
+        text-decoration: none;
+        text-shadow: 0 -1px 2px rgba(0,0,0,.2);
+        padding: 1px 1px;
+        outline: none;
+        border-radius: 3px;
+        background: linear-gradient(rgb(110,112,120), rgb(81,81,86)) rgb(110,112,120);
+        box-shadow:
+         0 1px rgba(255,255,255,.2) inset,
+         0 3px 5px rgba(0,1,6,.5),
+         0 0 1px 1px rgba(0,1,6,.2);
+        transition: .2s ease-in-out;
+      }
+      .aboutme_p {
+        font-size: 36px;
+        position: relative;
+        left:400px;
+        top:222px;
+        color:aquamarine;
+        width: 1100px;     
+       text-shadow: 4px 0px 10px rgb(241, 42, 182);
+       font-weight: 700;
+      }
+      .buttonback {
+        position: relative;
+        cursor: pointer;
+        left:950px;
+        top:230px;
+        display: inline-block;
+        font-size: 90%;
+        font-weight: 700;
+        color: rgb(255, 255, 255);
+        text-decoration: none;
+        text-shadow: 0 -1px 2px rgba(0,0,0,.2);
+        padding: 1em 5em;
+        outline: none;
+        border-radius: 3px;
+        background: linear-gradient(rgb(110,112,120), rgb(81,81,86)) rgb(110,112,120);
+        box-shadow:
+         0 1px rgba(255,255,255,.2) inset,
+         0 3px 5px rgba(0,1,6,.5),
+         0 0 1px 1px rgba(0,1,6,.2);
+        transition: .2s ease-in-out;
+      }
+    .buttonback:hover:not(:active) {
+      background: linear-gradient(rgb(126,126,134), rgb(70,71,76)) rgb(126,126,134);
+    }
+    .buttonback:active {
+      background: linear-gradient(rgb(76,77,82), rgb(56,57,62)) rgb(76,77,82);
+      box-shadow:
+       0 0 1px rgba(0,0,0,.5) inset,
+       0 2px 3px rgba(0,0,0,.5) inset,
+       0 1px 1px rgba(255,255,255,.1);
+    }
+    .hobbies {
+        font-size: 32px;
+        position: relative;
+        left:400px;
+        top:222px;
+        color:aquamarine;
+        width: 1200px;     
+       text-shadow: 4px 0px 10px rgb(241, 42, 182);
+       font-weight: 700;
+      }
