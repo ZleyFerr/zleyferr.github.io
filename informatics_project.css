@@ -215,11 +215,10 @@ body {
       }
       .buttonback {
         position: relative;
-        cursor: pointer;
-        left:950px;
-        top:230px;
+        left:1190px;
+        top:280px;
         display: inline-block;
-        font-size: 90%;
+        font-size: 50%;
         font-weight: 700;
         color: rgb(255, 255, 255);
         text-decoration: none;
