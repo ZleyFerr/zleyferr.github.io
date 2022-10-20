@@ -188,5 +188,20 @@ background-color: rgb(32, 33, 34);
   font-size: 40px;
   left:515px;
   right:400px;
-
   }
+.galleryphoto0{
+  position: relative;
+  width:800px;
+  right:150px;
+  left:110px;
+  border-radius: 15px;
+  height: 600px;
+}
+  .galleryphoto1{
+    position: relative;
+    bottom 400px;
+    width:800px;
+    right:150px;
+    left:110px;
+    border-radius: 15px;
+}
