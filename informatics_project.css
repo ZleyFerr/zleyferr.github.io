@@ -338,3 +338,15 @@ height:450px;
   text-shadow: 4px 0px 10px rgb(241, 42, 182);
   border-radius: 5%;
 }
+.zleyferr1{
+  position:relative;
+  left:1000px;
+  width:800px;
+  font-size:45px;
+  top:-200px;
+height:500px;
+  color: purple;
+  text-shadow: 4px 0px 10px rgb(241, 42, 182);
+  border-radius: 5%;
+  border:2px solid rgb(248, 50, 143); 
+}
