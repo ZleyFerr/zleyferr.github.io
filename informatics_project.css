@@ -216,8 +216,8 @@ body {
     }
     .buttonback {
       position: relative;
-      left:1190px;
-      top:280px;
+      left:1120px;
+      top:270px;
       display: inline-block;
       font-size: 50%;
       font-weight: 700;
@@ -268,8 +268,8 @@ body {
   .buttonback1 {
        position: relative;
     cursor: pointer;
-    left:850px;
-    top:355px;
+    left:800px;
+    top:305px;
     display: inline-block;
     font-size: 100%;
     font-weight: 700;
@@ -299,7 +299,7 @@ body {
 .buttonbackh {
     position: relative;
     cursor: pointer;
-    left:1220px;
+    left:1150px;
     top:270px;
     display: inline-block;
     font-size: 50%;
