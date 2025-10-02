@@ -1,0 +1,38 @@
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    color: white;
+    background: url('https://www.nasa.gov/sites/default/files/thumbnails/image/iss064e011525.jpg?itok=2qU5PgeK') no-repeat center center fixed;
+    background-size: cover;
+    height: auto;
+    min-height: 100vh;
+}
+
+.content {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;  /* Изменено, чтобы блок с текстом не был по центру, а начинался сверху */
+    padding: 20px;
+    box-sizing: border-box;
+    min-height: 100vh;
+}
+
+.text-block {
+    max-width: 800px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+    width: 100%; /* Обеспечивает адаптивность */
+    height: auto; /* Рамка расширяется по мере добавления контента */
+}
+
+h1 {
+    font-size: 3em;
+    margin-bottom: 20px;
+}
+
+p {
+    font-size: 1.5em;
+    line-height: 1.6;
+}
