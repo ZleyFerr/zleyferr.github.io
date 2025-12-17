@@ -1,62 +1,73 @@
 <!DOCTYPE html>
-<htmL>
-    <head>
-        <title>Список </title>
-        <meta charset="UTF-8">
-        <link rel="stylesheet" href="style.css">
-        <link rel="shortcut icon" href="https://clck.ru/xzMcC">
-    </head>
-    <body>
-        <div>
-            <img class="banner" src="https://clck.ru/yNpgB" alt="Баннер">
-        </div>
-        <div>  
-            <h1 class="h1">
-                10А Класc
-            </h1>
-            <h2 class="h2">
-                МБОУ "СОШ №30" г.Чебоксары
-            </h2>
-        </div>
-        <div>
-            <hr class="menuline">
-        </div>
-        <div>
-            <a href="https://zleyferr.github.io/main.html"  class="buttonmain">Главная</a>
-            <a href="https://zleyferr.github.io/news.html"  class="buttonmain">Новости</a>
-            <a href="https://zleyferr.github.io/achievements.html"  class="buttonmain">Достижения</a>
-            <a href="https://zleyferr.github.io/gallery.html"  class="buttonmain">Галерея</a>
-            <a href="https://zleyferr.github.io/info.html"  class="buttonmain">Информация</a>
-            <a href="https://zleyferr.github.io/class_list.html"  class="buttonmain">Список класса</a>
-            <a href="https://zleyferr.github.io/sectors.html"  class="buttonmain">Сектора</a>
-        </div>
-        <div>
-            <h1 class="tablemain"> ᅠ ᅠᅠ ᅠ  ᅠ ᅠᅠ ᅠ ᅠ Список класса.</h1>
-            <h2 class="news">Актуальный список класса : </h2>
-        </div>
-        <div>
-        <ol>
-            <li class="trname">Ананьев Максим Андреевич</li>
-            <li class="trname">Васильева Вера Владимировна</li>
-            <li class="trname">Васильева Виолетта Эдуардовна</li>
-            <li class="trname">Викторова Карина Александровна</li>
-            <li class="trname">Глобина Алина Владимировна</li>
-            <li class="trname">Григорьев Давид Анатольевич</li>
-            <li class="trname">Данилова Елизавета Андреевна</li>
-            <li class="trname">Иванова Анна Сергеевна</li>
-            <li class="trname">Иванова Анна Эдуардовна</li>
-            <li class="trname">Ижендеев Эрик Эдуардович</li>
-            <li class="trname">Козлова Вероника Андреевна</li>
-            <li class="trname">Крылов Максим Владимирович</li>
-            <li class="trname">Куприянова Марина Владимировна</li>
-            <li class="trname">Лисицын Данил Алексеевич</li>
-            <li class="trname">Матросова Мария Витальевна</li>
-            <li class="trname">Николаева Нина Петровна</li>
-            <li class="trname">Николаева Мария Михайловна</li>
-            <li class="trname">Перлова Виктория Алексеевна</li>
-            <li class="trname">Потемкина Карина Николаевна</li>
-            <li class="trname">Свинцова Александра Игоревна</li>
-        </ol>
-        </div>
-    </body>
-</htmL>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Проверка числа</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        input[type="text"] {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 200px;
+            font-size: 16px;
+        }
+        #output {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: green;
+            min-height: 1.5em;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Введите число</h2>
+    <input type="text" id="numberInput" placeholder="Введите код (например, хуй)">
+    <button onclick="checkNumber()">Проверить</button>
+    <div id="output"></div>
+</div>
+
+<script>
+
+    function checkNumber() {
+        const inputElement = document.getElementById('numberInput');
+        const outputElement = document.getElementById('output');
+        
+
+        const inputValue = inputElement.value.trim();
+        
+
+        if (inputValue === "17122025") 
+        {
+            outputElement.textContent = "https://www.youtube.com/watch?v=NriYl_1hxhM";
+            outputElement.style.color = "green";
+        } else 
+        {
+            outputElement.textContent = "Неверный код.";
+            outputElement.style.color = "red";
+        }
+    }
+</script>
+
+</body>
+</html>
