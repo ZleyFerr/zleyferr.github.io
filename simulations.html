@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Теория вероятностей | 3D Лаборатория + Доска Гальтона</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-3.1.0.min.js" charset="utf-8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] }
+        };
+    </script>
+    <style>
+        :root {
+            /* Замена цветов на твою новую палитру "Quiet Luxury" */
+            --primary: #2C3E35; 
+            --primary-dark: #1a2621;
+            --secondary: #6B6863;
+            --bg: #F7F5F2; 
+            --card-bg: #ffffff;
+            --text: #1A1A1A;
+            --border: #E0DDD7;
+            --success: #4D6353;
+            --danger: #A64D4D;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg); /* Убрал синий градиент, оставил бежевый фон */
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+       .navbar {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100% !important; /* На всю ширину */
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important; /* Лого влево, ссылки вправо */
+    align-items: center !important;
+    background: rgba(247, 245, 242, 0.95) !important;
+    backdrop-filter: blur(20px);
+    padding: 1.2rem 4rem !important; /* Отступы от краев экрана */
+    box-sizing: border-box !important;
+    z-index: 9999 !important;
+}
+
+.logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #1A1A1A;
+    text-decoration: none;
+    letter-spacing: -0.5px;
+    flex-shrink: 0 !important; /* Не даем логотипу сжиматься */
+}
+
+.nav-links {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    margin-left: auto !important; /* ЭТО ПРИНУДИТЕЛЬНО ТОЛКАЕТ КНОПКИ ВПРАВО */
+}
+
+.nav-links a {
+    text-decoration: none;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: #6B6863;
+    margin-left: 3rem !important; /* Расстояние МЕЖДУ кнопками */
+    transition: all 0.4s ease;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    position: relative;
+    padding-bottom: 4px;
+    white-space: nowrap !important;
+}
+
+.nav-links a:hover, 
+.nav-links a.active {
+    color: #1A1A1A !important;
+}
+
+/* Линия при наведении */
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 1px;
+    bottom: 0;
+    left: 0;
+    background-color: #1A1A1A;
+    transition: width 0.4s ease;
+}
+
+.nav-links a:hover::after,
+.nav-links a.active::after {
+    width: 100% !important;
+}
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 20px 50px;
+        }
+
+        .lab-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 3rem;
+        }
+
+        .lab-section {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 2.5rem;
+            /* border убран по просьбе */
+            box-shadow: 0 8px 20px rgba(0,0,0,0.03);
+            display: grid;
+            grid-template-columns: 320px 1fr 400px;
+            gap: 2.5rem;
+            align-items: start;
+        }
+
+        @media (max-width: 1200px) {
+            .lab-section { grid-template-columns: 1fr; }
+        }
+
+        .visual-zone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #f1f5f9;
+            border-radius: 20px;
+            height: 340px;
+            perspective: 1000px;
+            position: relative;
+            /* border убран по просьбе */
+            overflow: hidden;
+        }
+
+        .control-zone {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            justify-content: center;
+            height: 100%;
+        }
+
+        h2 { 
+            font-family: 'Playfair Display', serif;
+            font-weight: 800; 
+            font-size: 1.8rem; 
+            margin-bottom: 0.2rem; 
+            color: var(--text); 
+        }
+        .prob-label { 
+            display: inline-block; 
+            padding: 4px 12px; 
+            background: rgba(44, 62, 53, 0.1); 
+            color: var(--primary); 
+            border-radius: 8px; 
+            font-weight: 700; 
+            font-size: 0.9rem; 
+            margin-bottom: 1rem; 
+        }
+
+        .btn-group { display: flex; gap: 0.8rem; }
+        
+        button {
+            padding: 0.9rem 1.4rem;
+            border-radius: 14px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: inherit;
+        }
+
+        button.btn-main { background: var(--primary); color: white; }
+        button.btn-main:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(44, 62, 53, 0.2); background: var(--primary-dark); }
+        button:disabled { background: #cbd5e1; opacity: 0.6; cursor: not-allowed; transform: none !important; }
+        
+        button.btn-outline { background: transparent; border: 1px solid var(--border); color: #475569; }
+        button.btn-outline:hover { border-color: var(--primary); color: var(--primary); background: rgba(44,62,53,0.05); }
+
+        .mass-input-box {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        input[type="number"] {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 0.8rem;
+            border-radius: 10px;
+            color: var(--text);
+            width: 100%;
+            margin: 0.4rem 0 0.8rem 0;
+            font-weight: 600;
+            outline: none;
+        }
+        input:focus { border-color: var(--primary); }
+
+        .stats-zone {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 20px;
+            /* border убран по просьбе */
+            display: flex;
+            flex-direction: column;
+            height: 340px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card { 
+            background: white; 
+            padding: 14px; 
+            border-radius: 12px; 
+            border: 1px solid var(--border); 
+            border-left: 4px solid var(--primary); 
+        }
+        .stat-card span { font-size: 0.7rem; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .stat-card b { display: block; font-size: 1.4rem; margin-top: 5px; color: var(--text); }
+
+        .chart-wrap { flex: 1; min-height: 0; position: relative; }
+
+        /* Твои оригинальные анимации - НЕТРОНУТЫЕ */
+        .coin-3d {
+            width: 120px; height: 120px; position: relative;
+            transform-style: preserve-3d;
+            transition: transform 2.5s cubic-bezier(0.15, 0, 0.15, 1);
+        }
+        .coin-face {
+            position: absolute; width: 100%; height: 100%;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 4rem; backface-visibility: hidden; border: 8px solid #D4AF37;
+        }
+        .heads { background: #E5C76B; }
+        .tails { background: #F2D98C; transform: rotateY(180deg); }
+
+        .dice-3d {
+            width: 80px; height: 80px; position: relative; transform-style: preserve-3d;
+            transition: transform 2s cubic-bezier(0.2, 0, 0.2, 1);
+        }
+        .dice-face {
+            position: absolute; width: 80px; height: 80px;
+            background: #fff; border: 2px solid #ddd;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem; border-radius: 12px; color: #1e293b; font-weight: 800;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.1);
+        }
+        .df1 { transform: rotateY(0deg) translateZ(40px); }
+        .df2 { transform: rotateY(90deg) translateZ(40px); }
+        .df3 { transform: rotateY(180deg) translateZ(40px); }
+        .df4 { transform: rotateY(-90deg) translateZ(40px); }
+        .df5 { transform: rotateX(90deg) translateZ(40px); }
+        .df6 { transform: rotateX(-90deg) translateZ(40px); }
+
+        .wheel-container {
+            width: 240px; height: 240px; position: relative;
+            border-radius: 50%; border: 12px solid #1e293b;
+            box-shadow: 0 0 30px rgba(0,0,0,0.2);
+            transition: transform 4s cubic-bezier(0.1, 0, 0.1, 1);
+        }
+        .pointer-top {
+            position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
+            width: 30px; height: 40px; background: var(--danger);
+            clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 100;
+        }
+
+        #buffonCanvas, #galtonCanvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+        }
+        .res-text-overlay {
+            position: absolute;
+            bottom: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-weight: 800;
+            color: var(--primary);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        /* Монти Холл - НЕТРОНУТО */
+        .door-container {
+            display: flex;
+            gap: 15px;
+            perspective: 1000px;
+        }
+        .door {
+            width: 80px;
+            height: 120px;
+            cursor: pointer;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .door.open {
+            transform: rotateY(-180deg);
+        }
+        .door.selected {
+            outline: 4px solid #fbbf24;
+            outline-offset: 4px;
+            border-radius: 8px;
+        }
+        .door-front, .door-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 1.5rem;
+        }
+        .door-front {
+            background: var(--primary);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        .door-back {
+            background: #e2e8f0;
+            transform: rotateY(180deg);
+            font-size: 2rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <a href="index.html" class="logo">Theoria.</a>
+        <div class="nav-links">
+            <a href="index.html">Шпаргалки</a>
+            <a href="simulations.html" class="active">Симуляции</a>
+            <a href="mindmap.html">Карта понятий</a>
+            <a href="practice.html">Практикум</a>
+            <a href="applications.html">Применение</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="lab-grid">
+            
+            <!-- МОНЕТА -->
+            <section class="lab-section">
+                <div class="visual-zone">
+                    <div class="coin-3d" id="coinModel">
+                        <div class="coin-face heads">📀</div>
+                        <div class="coin-face tails">🔱</div>
+                    </div>
+                    <p class="res-text-overlay" id="coinResText">ГОТОВ К БРОСКУ</p>
+                </div>
+                <div class="control-zone">
+                    <div>
+                        <h2>Бросок монеты</h2>
+                        <div class="prob-label">Равномерное: P(A) = 0.5</div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn-main cin-btn" onclick="runCoin(1)">Одиночный</button>
+                        <button class="btn-outline" onclick="resetData('coin')">Сброс</button>
+                    </div>
+                    <div class="mass-input-box">
+                        <span style="font-size: 0.75rem; font-weight: 800; color: #64748b;">МАССОВАЯ СИМУЛЯЦИЯ:</span>
+                        <input type="number" id="coinN" value="100" min="1" max="10000">
+                        <button class="btn-main cin-btn" onclick="runCoin(document.getElementById('coinN').value)" style="width: 100%;">Запустить серию</button>
+                    </div>
+                </div>
+                <div class="stats-zone">
+                    <div class="stats-grid" style="grid-template-columns: 1fr 1fr;">
+                        <div class="stat-card"><span>Всего бросков</span><b id="c-total">0</b></div>
+                        <div class="stat-card">
+                            <span>Орел / Решка</span>
+                            <b><span id="c-h-perc">0%</span> / <span id="c-t-perc">0%</span></b>
+                        </div>
+                    </div>
+                    <div class="chart-wrap"><canvas id="chartCoin"></canvas></div>
+                </div>
+            </section>
+
+            <!-- КУБИК -->
+            <section class="lab-section">
+                <div class="visual-zone">
+                    <div class="dice-3d" id="diceModel">
+                        <div class="dice-face df1">1</div>
+                        <div class="dice-face df2">2</div>
+                        <div class="dice-face df3">3</div>
+                        <div class="dice-face df4">4</div>
+                        <div class="dice-face df5">5</div>
+                        <div class="dice-face df6">6</div>
+                    </div>
+                    <p class="res-text-overlay" id="diceResText">ЖДЕМ БРОСКА...</p>
+                </div>
+                <div class="control-zone">
+                    <div><h2>Игральная кость</h2><div class="prob-label">Дискретное: P ≈ 0.167</div></div>
+                    <div class="btn-group">
+                        <button class="btn-main dice-btn" onclick="runDice(1)">Бросить</button>
+                        <button class="btn-outline" onclick="resetData('dice')">Сброс</button>
+                    </div>
+                    <div class="mass-input-box">
+                        <span style="font-size: 0.75rem; font-weight: 800; color: #64748b;">МАССОВАЯ СИМУЛЯЦИЯ:</span>
+                        <input type="number" id="diceN" value="100">
+                        <button class="btn-main dice-btn" onclick="runDice(document.getElementById('diceN').value)" style="width: 100%;">Запустить серию</button>
+                    </div>
+                </div>
+                <div class="stats-zone">
+                    <div class="stats-grid">
+                        <div class="stat-card"><span>Опытов</span><b id="d-total">0</b></div>
+                        <div class="stat-card"><span>Мат. ожидание</span><b id="d-mean">0</b></div>
+                    </div>
+                    <div class="chart-wrap"><canvas id="chartDice"></canvas></div>
+                </div>
+            </section>
+
+            <!-- РУЛЕТКА -->
+            <section class="lab-section">
+                <div class="visual-zone">
+                    <div class="pointer-top"></div>
+                    <div class="wheel-container" id="wheelModel">
+                        <svg width="100%" height="100%" viewBox="0 0 100 100" id="wheelSvg" style="transform: rotate(-90deg)"></svg>
+                    </div>
+                    <p class="res-text-overlay" id="wheelResText">ДЕЛАЙТЕ СТАВКИ</p>
+                </div>
+                <div class="control-zone">
+                    <div><h2>Рулетка (0-36)</h2><div class="prob-label">Z-Factor: P(Zero) ≈ 2.7%</div></div>
+                    <div class="btn-group">
+                        <button class="btn-main spin-btn" onclick="runWheel(1)">Вращать</button>
+                        <button class="btn-outline" onclick="resetData('wheel')">Сброс</button>
+                    </div>
+                    <div class="mass-input-box">
+                        <span style="font-size: 0.75rem; font-weight: 800; color: #64748b;">МАССОВАЯ СИМУЛЯЦИЯ:</span>
+                        <input type="number" id="wheelN" value="100">
+                        <button class="btn-main spin-btn" onclick="runWheel(document.getElementById('wheelN').value)" style="width: 100%;">Запустить серию</button>
+                    </div>
+                </div>
+                <div class="stats-zone">
+                    <div class="stats-grid">
+                        <div class="stat-card"><span>Спинов</span><b id="w-total">0</b></div>
+                        <div class="stat-card"><span>Выпало</span><b id="w-last">-</b></div>
+                    </div>
+                    <div class="chart-wrap"><canvas id="chartWheel"></canvas></div>
+                </div>
+            </section>
+
+            <!-- ИГЛА БЮФФОНА -->
+            <section class="lab-section">
+                <div class="visual-zone" style="background: white;">
+                    <canvas id="buffonCanvas" width="320" height="340"></canvas>
+                    <p class="res-text-overlay" id="buffonResText">ЖДЕМ БРОСКА...</p>
+                </div>
+                <div class="control-zone">
+                    <div><h2>Игла Бюффона</h2><div class="prob-label">Формула: π ≈ (2·N·l)/(M·L)</div></div>
+                    <div class="btn-group">
+                        <button class="btn-main buf-btn" onclick="runBuffon(1)">Бросить</button>
+                        <button class="btn-outline" onclick="resetData('buffon')">Сброс</button>
+                    </div>
+                    <div class="mass-input-box">
+                        <span style="font-size: 0.75rem; font-weight: 800; color: #64748b;">ПАРАМЕТРЫ И СЕРИЯ:</span>
+                        <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+                            <div style="flex:1;"><span style="font-size: 0.7rem;">Длина (l)</span><input type="number" id="needleL" value="30" min="1" max="100"></div>
+                            <div style="flex:1;"><span style="font-size: 0.7rem;">Шаг (L)</span><input type="number" id="spaceL" value="50" min="1" max="100"></div>
+                        </div>
+                        <input type="number" id="buffonN" value="100" placeholder="Количество бросков">
+                        <button class="btn-main buf-btn" onclick="runBuffon(document.getElementById('buffonN').value)" style="width:100%;">Запустить серию</button>
+                    </div>
+                </div>
+                <div class="stats-zone">
+                    <div class="stats-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+                        <div class="stat-card"><span>Опытов</span><b id="b-total">0</b></div>
+                        <div class="stat-card"><span>Сечений</span><b id="b-hits">0</b></div>
+                        <div class="stat-card" style="border-left-color: var(--secondary);"><span>Оценка π</span><b id="b-pi" style="color: var(--secondary);">0.0000</b></div>
+                    </div>
+                    <div class="chart-wrap"><canvas id="chartBuffon"></canvas></div>
+                </div>
+            </section>
+
+            <!-- ПАРАДОКС МОНТИ ХОЛЛА -->
+            <section class="lab-section">
+                <div class="visual-zone">
+                    <div class="door-container" id="montyDoors">
+                        <div class="door" id="door0" onclick="montyPick(0)"><div class="door-front">1</div><div class="door-back" id="back0">🐐</div></div>
+                        <div class="door" id="door1" onclick="montyPick(1)"><div class="door-front">2</div><div class="door-back" id="back1">🐐</div></div>
+                        <div class="door" id="door2" onclick="montyPick(2)"><div class="door-front">3</div><div class="door-back" id="back2">🐐</div></div>
+                    </div>
+                    <p class="res-text-overlay" id="montyResText">ВЫБЕРИТЕ ДВЕРЬ</p>
+                </div>
+                <div class="control-zone">
+                    <div><h2>Парадокс Монти Холла</h2><div class="prob-label">Теория: P(смена) = 2/3</div></div>
+                    <div id="montyControls" style="min-height: 50px;"><button class="btn-outline" onclick="initMonty()" style="width:100%;">Новая игра</button></div>
+                    <div class="mass-input-box">
+                        <span style="font-size: 0.75rem; font-weight: 800; color: #64748b;">МАССОВАЯ СИМУЛЯЦИЯ:</span>
+                        <input type="number" id="montyN" value="1000">
+                        <button class="btn-main" onclick="runMontyBatch(document.getElementById('montyN').value)" style="width:100%;">Запустить 1000 раундов</button>
+                    </div>
+                    <div style="font-size: 0.85rem; color: #1e293b; background: #f8fafc; padding: 12px; border-radius: 12px; border: 1px solid var(--border); text-align: center;">
+                        <strong>📐 Формула полной вероятности:</strong><br>
+                        $$ P(A) = \sum_{i=1}^{n} P(H_i) \cdot P_{H_i}(A) $$
+                        <span style="font-size: 0.75rem; color: #475569;">(из лекции: вероятность события A вычисляется через гипотезы)</span>
+                    </div>
+                </div>
+                <div class="stats-zone">
+                    <div class="stats-grid">
+                        <div class="stat-card"><span>Побед (Смена)</span><b id="m-switch-w">0</b></div>
+                        <div class="stat-card"><span>Побед (Остаться)</span><b id="m-stay-w">0</b></div>
+                    </div>
+                    <div class="chart-wrap"><canvas id="chartMonty"></canvas></div>
+                </div>
+            </section>
+
+            <!-- ГРАФИК РАСПРЕДЕЛЕНИЯ -->
+            <section class="lab-section">
+                <div class="visual-zone">
+                    <div id="distPlot" style="width:100%; height:100%;"></div>
+                </div>
+                <div class="control-zone">
+                    <h2>График распределения</h2>
+                    <label>a (μ): <b id="aVal">0</b></label>
+                    <input type="range" id="meanSlider" min="-5" max="5" step="0.1" value="0">
+                    <label>σ (σ): <b id="sigmaVal">1</b></label>
+                    <input type="range" id="sigmaSlider" min="0.2" max="3" step="0.1" value="1">
+                    <select id="distType">
+                        <option value="normal">Нормальное</option>
+                        <option value="uniform">Равномерное</option>
+                        <option value="exp">Показательное</option>
+                        <option value="poisson">Пуассона (λ = a)</option>
+                    </select>
+                    <div style="margin-top:10px; font-size:0.9rem;">
+                        $$ f(x) = \frac{1}{\sigma \sqrt{2\pi}} e^{-\frac{(x-a)^2}{2\sigma^2}} $$
+                    </div>
+                    <div style="margin-top:15px;">
+                        Границы интеграла:<br>
+                        <input type="number" id="leftBound" value="-1" step="0.1" style="width:80px;">
+                        <input type="number" id="rightBound" value="1" step="0.1" style="width:80px;">
+                    </div>
+                    <button class="btn-main" onclick="generateSample()">🎲 Сгенерировать выборку (500)</button>
+                </div>
+                <div class="stats-zone">
+                    <div id="hoverInfo" style="font-size:0.85rem;">Наведите на график</div>
+                    <div id="probInfo" style="margin-top:10px; font-weight:800;"></div>
+                </div>
+            </section>
+
+            <!-- ДОСКА ГАЛЬТОНА (КВИНКУНКС) -->
+            <section class="lab-section">
+                <div class="visual-zone" style="background: white;">
+                    <canvas id="galtonCanvas" width="400" height="340"></canvas>
+                    <p class="res-text-overlay" id="galtonResText">Доска Гальтона</p>
+                </div>
+                <div class="control-zone">
+                    <h2>Квинкункс (доска Гальтона)</h2>
+                    <div class="prob-label">Биномиальное → нормальное</div>
+                    <div class="mass-input-box">
+                        <span style="font-size: 0.75rem; font-weight: 800; color: #64748b;">ПАРАМЕТРЫ:</span>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <div style="flex:1;"><span style="font-size: 0.7rem;">Ряды</span><input type="number" id="gRows" value="12" min="4" max="20"></div>
+                            <div style="flex:1;"><span style="font-size: 0.7rem;">Шариков</span><input type="number" id="gBalls" value="200" min="10" max="500"></div>
+                            <div style="flex:1;"><span style="font-size: 0.7rem;">FPS</span><input type="number" id="gFps" value="60" min="30" max="120"></div>
+                            <div style="flex:1;"><span style="font-size: 0.7rem;">Размер шара</span><input type="number" id="gSize" value="3" min="2" max="6"></div>
+                        </div>
+                        <div class="btn-group" style="margin-top: 0.8rem;">
+                            <button class="btn-main" id="runGaltonBtn">Запустить</button>
+                            <button class="btn-outline" id="resetGaltonBtn">Сброс</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="stats-zone">
+                    <div class="stats-grid" style="grid-template-columns: 1fr 1fr;">
+                        <div class="stat-card"><span>Всего шариков</span><b id="galtonTotal">0</b></div>
+                        <div class="stat-card"><span>Распределение</span><b>нормальное</b></div>
+                    </div>
+                    <div class="chart-wrap"><canvas id="chartGalton"></canvas></div>
+                </div>
+            </section>
+        </div>
+    </div>
+    
+
+    <script>
+        // ========== ОБЩИЕ ДАННЫЕ И ГРАФИКИ ==========
+        const store = {
+            coin: { h: 0, t: 0, total: 0 },
+            dice: { f: [0,0,0,0,0,0], total: 0 },
+            wheel: { f: new Array(37).fill(0), total: 0 },
+            buffon: { total: 0, hits: 0, history: [], needles: [] },
+            monty: { switchW: 0, switchL: 0, stayW: 0, stayL: 0, prize: 0, selected: -1, state: 'start' },
+            galton: { bins: [], total: 0 }
+        };
+
+        Chart.defaults.color = '#0f172a';
+        Chart.defaults.font.family = "'Inter', sans-serif";
+        const cConfig = { responsive: true, maintainAspectRatio: false, animation: { duration: 400 } };
+        
+        const charts = {
+            coin: new Chart(document.getElementById('chartCoin'), { type: 'doughnut', data: { labels: ['Орел', 'Решка'], datasets: [{ data: [0,0], backgroundColor: ['#4f46e5', '#c026d3'], borderWidth: 0, hoverOffset: 10 }] }, options: {...cConfig, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, padding: 20 } } } } }),
+            dice: new Chart(document.getElementById('chartDice'), { type: 'bar', data: { labels: ['1','2','3','4','5','6'], datasets: [{ data: [0,0,0,0,0,0], backgroundColor: '#4f46e5', borderRadius: 6 }] }, options: {...cConfig, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: '#e2e8f0' } }, x: { grid: { display: false } } } } }),
+            wheel: new Chart(document.getElementById('chartWheel'), { type: 'bar', data: { labels: Array.from({length:37},(_,i)=>i), datasets: [{ data: new Array(37).fill(0), backgroundColor: '#22c55e', borderRadius: 2 }] }, options: {...cConfig, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { beginAtZero: true, grid: { color: '#e2e8f0' } } } } }),
+            buffon: new Chart(document.getElementById('chartBuffon'), { type: 'line', data: { labels: [], datasets: [{ label: 'Оценка π', data: [], borderColor: '#c026d3', backgroundColor: 'rgba(192, 38, 211, 0.1)', fill: true, tension: 0.1, pointRadius: 0, borderWidth: 2 }, { label: 'π = 3.1415', data: [], borderColor: '#22c55e', borderDash: [5, 5], pointRadius: 0, borderWidth: 1 }] }, options: {...cConfig, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { suggestedMin: 2.5, suggestedMax: 4.0, grid: { color: '#e2e8f0' } } } } }),
+            monty: new Chart(document.getElementById('chartMonty'), { type: 'bar', data: { labels: ['Смена', 'Остаться'], datasets: [{ data: [0,0], backgroundColor: ['#c026d3', '#4f46e5'], borderRadius: 8 }] }, options: {...cConfig, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, max: 100 } } } }),
+            galton: new Chart(document.getElementById('chartGalton'), { type: 'bar', data: { labels: [], datasets: [{ data: [], backgroundColor: '#4f46e5', borderRadius: 4 }] }, options: {...cConfig, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: '#e2e8f0' } } } } })
+        };
+
+        function toggleButtons(className, status) { document.querySelectorAll('.'+className).forEach(b => b.disabled = status); }
+
+        // ---------- МОНЕТА ----------
+        let coinRot = 0;
+        function runCoin(n) {
+            n = parseInt(n) || 1;
+            toggleButtons('cin-btn', true);
+            let finalSide = '';
+            for(let i=0; i<n; i++) {
+                const res = Math.random() < 0.5 ? 'h' : 't';
+                store.coin[res]++; store.coin.total++;
+                if(i === n-1) finalSide = res;
+            }
+            coinRot += 1800 + (finalSide === 'h' ? 0 : 180); 
+            document.getElementById('coinModel').style.transform = `rotateY(${coinRot}deg)`;
+            document.getElementById('coinResText').innerText = "КРУТИМ...";
+            setTimeout(() => {
+                updateCoinUI();
+                document.getElementById('coinResText').innerText = finalSide === 'h' ? "ВЫПАЛ ОРЕЛ" : "ВЫПАЛА РЕШКА";
+                toggleButtons('cin-btn', false);
+            }, 2500);
+        }
+        function updateCoinUI() {
+            const total = store.coin.total;
+            const percH = total ? Math.round(store.coin.h / total * 100) : 0;
+            const percT = total ? Math.round(store.coin.t / total * 100) : 0;
+            charts.coin.data.datasets[0].data = [store.coin.h, store.coin.t];
+            charts.coin.update();
+            document.getElementById('c-total').innerText = total;
+            document.getElementById('c-h-perc').innerText = percH + '%';
+            document.getElementById('c-t-perc').innerText = percT + '%';
+        }
+
+        // ---------- КУБИК ----------
+        const dR = [{x:0, y:0}, {x:0, y:-90}, {x:0, y:-180}, {x:0, y:90}, {x:-90, y:0}, {x:90, y:0}];
+        function runDice(n) {
+            n = parseInt(n) || 1;
+            toggleButtons('dice-btn', true);
+            let finalSide = 0;
+            for(let i=0; i<n; i++) {
+                const res = Math.floor(Math.random() * 6);
+                store.dice.f[res]++; store.dice.total++;
+                if(i === n-1) finalSide = res;
+            }
+            const rot = dR[finalSide];
+            const extraX = (Math.floor(Math.random()*3)+5)*360;
+            const extraY = (Math.floor(Math.random()*3)+5)*360;
+            document.getElementById('diceModel').style.transform = `rotateX(${rot.x + extraX}deg) rotateY(${rot.y + extraY}deg)`;
+            document.getElementById('diceResText').innerText = "БРОСАЕМ...";
+            setTimeout(() => {
+                updateDiceUI();
+                document.getElementById('diceResText').innerText = `РЕЗУЛЬТАТ: ${finalSide + 1}`;
+                toggleButtons('dice-btn', false);
+            }, 2000);
+        }
+        function updateDiceUI() {
+            charts.dice.data.datasets[0].data = store.dice.f;
+            charts.dice.update();
+            const sum = store.dice.f.reduce((a,b,i)=>a+b*(i+1),0);
+            document.getElementById('d-total').innerText = store.dice.total;
+            document.getElementById('d-mean').innerText = store.dice.total ? (sum/store.dice.total).toFixed(2) : 0;
+        }
+
+        // ---------- РУЛЕТКА ----------
+        const numbers = [0,32,15,19,4,21,2,25,17,34,6,27,13,36,11,30,8,23,10,5,24,16,33,1,20,14,31,9,22,18,29,7,28,12,35,3,26];
+        const svg = document.getElementById('wheelSvg');
+        numbers.forEach((num, i) => {
+            const angle = 360 / 37;
+            const color = num === 0 ? '#22c55e' : ([32,19,21,25,34,27,36,30,23,5,16,1,14,9,18,7,12,3].includes(num) ? '#ef4444' : '#f1f5f9');
+            const sector = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            const x1 = 50 + 50 * Math.cos(Math.PI * (i * angle) / 180);
+            const y1 = 50 + 50 * Math.sin(Math.PI * (i * angle) / 180);
+            const x2 = 50 + 50 * Math.cos(Math.PI * ((i+1) * angle) / 180);
+            const y2 = 50 + 50 * Math.sin(Math.PI * ((i+1) * angle) / 180);
+            sector.setAttribute("d", `M50,50 L${x1},${y1} A50,50 0 0,1 ${x2},${y2} Z`);
+            sector.setAttribute("fill", color);
+            sector.setAttribute("stroke", "#cbd5e1");
+            sector.setAttribute("stroke-width", "0.5");
+            svg.appendChild(sector);
+        });
+        let wRot = 0;
+        function runWheel(n) {
+            n = parseInt(n) || 1;
+            toggleButtons('spin-btn', true);
+            let lastIdx = 0;
+            for(let i=0; i<n; i++) {
+                const resIdx = Math.floor(Math.random() * 37);
+                store.wheel.f[numbers[resIdx]]++; store.wheel.total++;
+                if(i === n-1) lastIdx = resIdx;
+            }
+            wRot += 2520 + (360 - (lastIdx * (360/37))); 
+            document.getElementById('wheelModel').style.transform = `rotate(${wRot}deg)`;
+            document.getElementById('wheelResText').innerText = "СТАВКИ ПРИНЯТЫ...";
+            setTimeout(() => {
+                charts.wheel.data.datasets[0].data = store.wheel.f;
+                charts.wheel.update();
+                document.getElementById('w-total').innerText = store.wheel.total;
+                document.getElementById('w-last').innerText = numbers[lastIdx];
+                document.getElementById('wheelResText').innerText = `ВЫПАЛО: ${numbers[lastIdx]}`;
+                toggleButtons('spin-btn', false);
+            }, 4000);
+        }
+
+        // ---------- ИГЛА БЮФФОНА ----------
+        function runBuffon(n) {
+            n = parseInt(n) || 1;
+            toggleButtons('buf-btn', true);
+            const l = parseFloat(document.getElementById('needleL').value) || 30;
+            const L = parseFloat(document.getElementById('spaceL').value) || 50;
+            const visLinesSpacing = 50;
+            const visNeedleLen = visLinesSpacing * (l / L);
+            for(let i=0; i<n; i++) {
+                const dMath = Math.random() * (L / 2);
+                const thetaMath = Math.random() * (Math.PI / 2);
+                const isHit = dMath <= (l / 2) * Math.sin(thetaMath);
+                store.buffon.total++;
+                if(isHit) store.buffon.hits++;
+                let currentPi = store.buffon.hits > 0 ? (2 * l * store.buffon.total) / (L * store.buffon.hits) : 0;
+                store.buffon.history.push(currentPi);
+                const lineK = Math.floor(Math.random() * 6);
+                const visLineY = 45 + lineK * visLinesSpacing;
+                const visD = dMath * (visLinesSpacing / L) * 2; 
+                const sign = Math.random() < 0.5 ? 1 : -1;
+                const vY = visLineY + sign * visD;
+                const vX = 20 + Math.random() * 280;
+                const vAngle = Math.random() < 0.5 ? thetaMath : Math.PI - thetaMath;
+                store.buffon.needles.push({x: vX, y: vY, angle: vAngle, len: visNeedleLen, hit: isHit});
+                if(store.buffon.needles.length > 80) store.buffon.needles.shift();
+            }
+            document.getElementById('buffonResText').innerText = "ВЫЧИСЛЯЕМ...";
+            drawBuffonCanvas();
+            setTimeout(() => {
+                updateBuffonUI();
+                const piCalc = store.buffon.hits ? ((2 * l * store.buffon.total) / (L * store.buffon.hits)).toFixed(4) : "0.0000";
+                document.getElementById('buffonResText').innerText = `π ≈ ${piCalc}`;
+                toggleButtons('buf-btn', false);
+            }, n > 1 ? 800 : 400);
+        }
+        function drawBuffonCanvas() {
+            const cvs = document.getElementById('buffonCanvas');
+            if(!cvs) return;
+            const ctx = cvs.getContext('2d');
+            ctx.clearRect(0, 0, cvs.width, cvs.height);
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 2;
+            for(let y = 45; y < cvs.height; y += 50) {
+                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(cvs.width, y); ctx.stroke();
+            }
+            store.buffon.needles.forEach(ndl => {
+                ctx.beginPath();
+                ctx.moveTo(ndl.x - (ndl.len/2)*Math.cos(ndl.angle), ndl.y - (ndl.len/2)*Math.sin(ndl.angle));
+                ctx.lineTo(ndl.x + (ndl.len/2)*Math.cos(ndl.angle), ndl.y + (ndl.len/2)*Math.sin(ndl.angle));
+                ctx.strokeStyle = ndl.hit ? '#ef4444' : '#4f46e5';
+                ctx.lineWidth = 3; ctx.stroke();
+            });
+        }
+        function updateBuffonUI() {
+            document.getElementById('b-total').innerText = store.buffon.total;
+            document.getElementById('b-hits').innerText = store.buffon.hits;
+            const l = parseFloat(document.getElementById('needleL').value) || 30;
+            const L = parseFloat(document.getElementById('spaceL').value) || 50;
+            const piVal = store.buffon.hits > 0 ? (2 * l * store.buffon.total) / (L * store.buffon.hits) : 0;
+            document.getElementById('b-pi').innerText = piVal.toFixed(4);
+            const step = Math.ceil(store.buffon.history.length / 100);
+            const sampledLabels = []; const sampledData = []; const sampledPi = [];
+            for (let i = 0; i < store.buffon.history.length; i += step) {
+                sampledLabels.push(i + 1); sampledData.push(store.buffon.history[i]); sampledPi.push(Math.PI);
+            }
+            charts.buffon.data.labels = sampledLabels;
+            charts.buffon.data.datasets[0].data = sampledData;
+            charts.buffon.data.datasets[1].data = sampledPi;
+            charts.buffon.update();
+        }
+
+        // ---------- МОНТИ ХОЛЛ ----------
+        function initMonty() {
+            store.monty.prize = Math.floor(Math.random() * 3);
+            store.monty.state = 'pick';
+            store.monty.selected = -1;
+            document.getElementById('montyResText').innerText = "ВЫБЕРИТЕ ДВЕРЬ";
+            document.getElementById('montyControls').innerHTML = '<button class="btn-outline" onclick="initMonty()" style="width:100%;">Начать заново</button>';
+            for(let i=0; i<3; i++) {
+                document.getElementById('door'+i).className = 'door';
+                document.getElementById('back'+i).innerText = (i === store.monty.prize) ? "🚗" : "🐐";
+            }
+        }
+
+        function montyPick(idx) {
+            if(store.monty.state !== 'pick') return;
+            store.monty.selected = idx;
+            store.monty.state = 'decision';
+            document.getElementById('door'+idx).classList.add('selected');
+            let possible = [0,1,2].filter(i => i !== idx && i !== store.monty.prize);
+            let openIdx = possible[Math.floor(Math.random() * possible.length)];
+            setTimeout(() => {
+                document.getElementById('door'+openIdx).classList.add('open');
+                document.getElementById('montyResText').innerText = "ОТКРЫТА КОЗА. СМЕНИТЕ ВЫБОР?";
+                document.getElementById('montyControls').innerHTML = `
+                    <div class="btn-group">
+                        <button class="btn-main" onclick="montyFinal(true)">Сменить</button>
+                        <button class="btn-outline" onclick="montyFinal(false)">Остаться</button>
+                    </div>
+                `;
+            }, 500);
+        }
+
+        function montyFinal(switched) {
+            let finalIdx = store.monty.selected;
+            if(switched) {
+                finalIdx = [0,1,2].find(i => i !== store.monty.selected && !document.getElementById('door'+i).classList.contains('open'));
+            }
+            const win = (finalIdx === store.monty.prize);
+            if(switched) { win ? store.monty.switchW++ : store.monty.switchL++; }
+            else { win ? store.monty.stayW++ : store.monty.stayL++; }
+            document.getElementById('door'+finalIdx).classList.add('selected');
+            document.querySelectorAll('.door').forEach(d => d.classList.add('open'));
+            document.getElementById('montyResText').innerText = win ? "ВЫ ВЫИГРАЛИ АВТОМОБИЛЬ!" : "УВЫ, ТАМ КОЗА...";
+            updateMontyUI();
+            store.monty.state = 'end';
+            document.getElementById('montyControls').innerHTML = '<button class="btn-main" onclick="initMonty()" style="width:100%;">Играть еще раз</button>';
+        }
+
+        function animateCounter(elementId, start, end, duration) {
+            const element = document.getElementById(elementId);
+            const range = end - start;
+            const startTime = performance.now();
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                let progress = Math.min(elapsed / duration, 1);
+                const value = Math.floor(start + range * progress);
+                element.innerText = value;
+                if(progress < 1) requestAnimationFrame(update);
+                else element.innerText = end;
+            }
+            requestAnimationFrame(update);
+        }
+
+        function runMontyBatch(n) {
+            n = parseInt(n) || 1000;
+            let switchWins = 0, stayWins = 0;
+            for(let i = 0; i < n; i++) {
+                const prize = Math.floor(Math.random() * 3);
+                const choice = Math.floor(Math.random() * 3);
+                if(choice === prize) stayWins++;
+                else switchWins++;
+            }
+            const finalSwitchW = store.monty.switchW + switchWins;
+            const finalStayW = store.monty.stayW + stayWins;
+            animateCounter('m-switch-w', store.monty.switchW, finalSwitchW, 500);
+            animateCounter('m-stay-w', store.monty.stayW, finalStayW, 500);
+            store.monty.switchW = finalSwitchW;
+            store.monty.stayW = finalStayW;
+            store.monty.switchL += (n - switchWins);
+            store.monty.stayL += (n - stayWins);
+            setTimeout(() => {
+                const demoPrize = Math.floor(Math.random() * 3);
+                const demoChoice = Math.floor(Math.random() * 3);
+                for(let i = 0; i < 3; i++) {
+                    const doorDiv = document.getElementById(`door${i}`);
+                    const backDiv = document.getElementById(`back${i}`);
+                    backDiv.innerText = (i === demoPrize) ? "🚗" : "🐐";
+                    doorDiv.classList.remove('open', 'selected');
+                }
+                document.getElementById(`door${demoChoice}`).classList.add('selected');
+                let possible = [0,1,2].filter(i => i !== demoChoice && i !== demoPrize);
+                let openIdx = possible[Math.floor(Math.random() * possible.length)];
+                setTimeout(() => {
+                    document.getElementById(`door${openIdx}`).classList.add('open');
+                    setTimeout(() => {
+                        for(let i = 0; i < 3; i++) {
+                            document.getElementById(`door${i}`).classList.add('open');
+                        }
+                        document.getElementById('montyResText').innerHTML = `Симуляция ${n} раундов завершена.<br>Смена выигрывает в ${(switchWins/n*100).toFixed(1)}% случаев.`;
+                        updateMontyUI();
+                    }, 500);
+                }, 500);
+            }, 600);
+        }
+
+        function updateMontyUI() {
+            document.getElementById('m-switch-w').innerText = store.monty.switchW;
+            document.getElementById('m-stay-w').innerText = store.monty.stayW;
+            const swTotal = store.monty.switchW + store.monty.switchL;
+            const stTotal = store.monty.stayW + store.monty.stayL;
+            const swRate = swTotal ? (store.monty.switchW / swTotal * 100) : 0;
+            const stRate = stTotal ? (store.monty.stayW / stTotal * 100) : 0;
+            charts.monty.data.datasets[0].data = [swRate.toFixed(1), stRate.toFixed(1)];
+            charts.monty.update();
+        }
+
+        // ---------- ГРАФИК РАСПРЕДЕЛЕНИЯ ----------
+        let sampleData = [];
+
+        function normalPDF(x, a, s) {
+            return (1 / (s * Math.sqrt(2 * Math.PI))) * Math.exp(-((x - a) ** 2) / (2 * s * s));
+        }
+
+        function erf(x) {
+            const t = 1 / (1 + 0.3275911 * Math.abs(x));
+            const y = 1 - (((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x));
+            return x >= 0 ? y : -y;
+        }
+
+        function poissonPMF(k, lambda) {
+            let fact = 1;
+            for (let i = 1; i <= k; i++) fact *= i;
+            return Math.pow(lambda, k) * Math.exp(-lambda) / fact;
+        }
+
+        function updateDistribution() {
+            const a = parseFloat(document.getElementById('meanSlider').value);
+            const s = parseFloat(document.getElementById('sigmaSlider').value);
+            const type = document.getElementById('distType').value;
+            const L = parseFloat(document.getElementById('leftBound').value);
+            const R = parseFloat(document.getElementById('rightBound').value);
+            
+            document.getElementById('aVal').innerText = a;
+            document.getElementById('sigmaVal').innerText = s;
+            
+            let x = [], y = [], areaX = [], areaY = [];
+            let prob = 0;
+            
+            if (type === "poisson") {
+                let k = [], p = [];
+                const lambda = a > 0 ? a : 3;
+                for (let i = 0; i <= 15; i++) {
+                    k.push(i);
+                    p.push(poissonPMF(i, lambda));
+                }
+                Plotly.react('distPlot', [{
+                    x: k,
+                    y: p,
+                    type: 'bar',
+                    marker: { color: '#4f46e5' }
+                }], { margin: { t: 10 } });
+                document.getElementById('probInfo').innerText = "Дискретное распределение Пуассона";
+                return;
+            }
+            
+            for (let i = -8; i <= 8; i += 0.05) {
+                x.push(i);
+                let val = 0;
+                if (type === "normal") val = normalPDF(i, a, s);
+                if (type === "uniform") val = (i >= a - s && i <= a + s) ? 1 / (2 * s) : 0;
+                if (type === "exp") {
+                    const lambda = 1 / s;
+                    val = i >= 0 ? lambda * Math.exp(-lambda * i) : 0;
+                }
+                y.push(val);
+                
+                if (i >= L && i <= R) {
+                    areaX.push(i);
+                    areaY.push(val);
+                    prob += val * 0.05;
+                }
+            }
+            
+            document.getElementById('probInfo').innerHTML = `P(${L.toFixed(2)} ≤ X ≤ ${R.toFixed(2)}) ≈ ${prob.toFixed(4)}`;
+            
+            const traces = [
+                {
+                    x: x, y: y,
+                    mode: 'lines',
+                    line: { width: 4, color: '#4f46e5' },
+                    fill: 'tozeroy',
+                    fillcolor: 'rgba(79,70,229,0.15)',
+                    name: 'Плотность'
+                },
+                {
+                    x: areaX, y: areaY,
+                    fill: 'tozeroy',
+                    type: 'scatter',
+                    mode: 'none',
+                    fillcolor: 'rgba(34,197,94,0.4)',
+                    name: 'Вероятность'
+                }
+            ];
+            
+            if (sampleData.length > 0) {
+                traces.push({
+                    x: sampleData,
+                    type: 'histogram',
+                    opacity: 0.5,
+                    marker: { color: '#c026d3' },
+                    name: 'Выборка (500)',
+                    histnorm: 'probability density'
+                });
+            }
+            
+            const layout = {
+                dragmode: 'pan',
+                shapes: [
+                    { type: 'line', x0: L, x1: L, y0: 0, y1: Math.max(...y), line: { color: 'red', width: 2, dash: 'dash' } },
+                    { type: 'line', x0: R, x1: R, y0: 0, y1: Math.max(...y), line: { color: 'red', width: 2, dash: 'dash' } }
+                ],
+                margin: { t: 10, l: 40, r: 20, b: 30 },
+                hovermode: 'closest'
+            };
+            
+            Plotly.react('distPlot', traces, layout);
+            
+            const plotDiv = document.getElementById('distPlot');
+            plotDiv.on('plotly_hover', (data) => {
+                const pt = data.points[0];
+                if (pt && pt.y !== undefined) {
+                    document.getElementById('hoverInfo').innerHTML = `x = ${pt.x.toFixed(3)}, f(x) = ${pt.y.toFixed(5)}`;
+                }
+            });
+        }
+
+        function generateSample() {
+            sampleData = [];
+            const a = parseFloat(document.getElementById('meanSlider').value);
+            const s = parseFloat(document.getElementById('sigmaSlider').value);
+            for (let i = 0; i < 500; i++) {
+                let u1 = Math.random(), u2 = Math.random();
+                let z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+                sampleData.push(a + s * z);
+            }
+            updateDistribution();
+        }
+
+        document.getElementById('meanSlider').addEventListener('input', updateDistribution);
+        document.getElementById('sigmaSlider').addEventListener('input', updateDistribution);
+        document.getElementById('distType').addEventListener('change', updateDistribution);
+        document.getElementById('leftBound').addEventListener('input', updateDistribution);
+        document.getElementById('rightBound').addEventListener('input', updateDistribution);
+
+        // ---------- ДОСКА ГАЛЬТОНА (КВИНКУНКС) ----------
+        const galtonCanvas = document.getElementById('galtonCanvas');
+        let galtonBalls = [];
+        let galtonQueue = [];
+        let galtonRunning = false;
+        let spawnInterval = null;
+        let lastFrameTime = 0;
+        let pegCache = [];
+
+        function runGalton() {
+            if (galtonRunning) return;
+            const rows = parseInt(document.getElementById('gRows').value) || 12;
+            const ballsCount = parseInt(document.getElementById('gBalls').value) || 200;
+            store.galton.bins = new Array(rows + 1).fill(0);
+            store.galton.total = 0;
+            galtonBalls = [];
+            galtonQueue = new Array(ballsCount).fill(0);
+            galtonRunning = true;
+            if (spawnInterval) clearInterval(spawnInterval);
+            spawnInterval = setInterval(() => {
+                if (!galtonQueue.length) {
+                    clearInterval(spawnInterval);
+                    spawnInterval = null;
+                    return;
+                }
+                galtonQueue.pop();
+                galtonBalls.push({
+                    x: 200,
+                    y: 0,
+                    vx: 0,
+                    vy: 0,
+                    level: 0,
+                    done: false
+                });
+            }, 20);
+            requestAnimationFrame(loopGalton);
+        }
+
+        function loopGalton(timestamp) {
+            const fpsLimit = parseInt(document.getElementById('gFps').value) || 60;
+            const interval = 1000 / fpsLimit;
+            if (timestamp - lastFrameTime < interval) {
+                if (galtonRunning) requestAnimationFrame(loopGalton);
+                return;
+            }
+            lastFrameTime = timestamp;
+            updateGaltonPhysics();
+            renderGalton();
+            if (galtonRunning) requestAnimationFrame(loopGalton);
+        }
+
+        function updateGaltonPhysics() {
+            const rows = parseInt(document.getElementById('gRows').value) || 12;
+            for (let i = 0; i < galtonBalls.length; i++) {
+                const b = galtonBalls[i];
+                if (b.done) continue;
+                b.vy += 0.25;
+                b.y += b.vy;
+                if (b.level < rows && b.y > 30 + b.level * 20) {
+                    const dir = Math.random() < 0.5 ? -1 : 1;
+                    b.vx = dir * (1.5 + Math.random());
+                    b.vy *= 0.5;
+                    b.x += b.vx * 6;
+                    b.level++;
+                }
+                if (b.level === rows && b.y > 280) {
+                    const bin = Math.round((b.x - 100) / 20);
+                    const idx = Math.max(0, Math.min(rows, bin));
+                    store.galton.bins[idx]++;
+                    store.galton.total++;
+                    b.done = true;
+                }
+            }
+            if (store.galton.total === galtonBalls.length && (!galtonQueue || galtonQueue.length === 0)) {
+                galtonRunning = false;
+                if (spawnInterval) clearInterval(spawnInterval);
+                updateGaltonChart();
+            }
+        }
+
+        function renderGalton() {
+            const ctx = galtonCanvas.getContext('2d');
+            const size = parseInt(document.getElementById('gSize').value) || 3;
+            ctx.clearRect(0, 0, galtonCanvas.width, galtonCanvas.height);
+            drawPegsFast(ctx);
+            drawBallsBatch(ctx, size);
+            drawHistogram(ctx);
+            drawGaussian(ctx);
+        }
+
+        function drawPegsFast(ctx) {
+            const rows = parseInt(document.getElementById('gRows').value) || 12;
+            if (pegCache.length !== rows) {
+                pegCache = [];
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c <= r; c++) {
+                        pegCache.push({
+                            x: 200 + (c - r / 2) * 20,
+                            y: 30 + r * 20
+                        });
+                    }
+                }
+            }
+            ctx.fillStyle = "#94a3b8";
+            for (let p of pegCache) {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function drawBallsBatch(ctx, size) {
+            ctx.beginPath();
+            for (let i = 0; i < galtonBalls.length; i++) {
+                const b = galtonBalls[i];
+                if (b.done) continue;
+                ctx.moveTo(b.x + size, b.y);
+                ctx.arc(b.x, b.y, size, 0, Math.PI * 2);
+            }
+            ctx.fillStyle = "#4f46e5";
+            ctx.fill();
+        }
+
+        function drawHistogram(ctx) {
+            const bins = store.galton.bins;
+            if (!bins.length) return;
+            const max = Math.max(...bins, 1);
+            for (let i = 0; i < bins.length; i++) {
+                const h = (bins[i] / max) * 60;
+                ctx.fillStyle = "#22c55e";
+                ctx.fillRect(100 + i * 20, 300 - h, 14, h);
+            }
+        }
+
+        function drawGaussian(ctx) {
+            if (store.galton.total < 20) return;
+            const n = parseInt(document.getElementById('gRows').value) || 12;
+            const p = 0.5;
+            const mean = n * p;
+            const variance = n * p * (1 - p);
+            const sigma = Math.sqrt(variance);
+            ctx.beginPath();
+            ctx.strokeStyle = "#ef4444";
+            ctx.lineWidth = 2;
+            for (let k = 0; k <= n; k++) {
+                const x = 100 + k * 20;
+                const val = (1 / (sigma * Math.sqrt(2 * Math.PI))) * Math.exp(-((k - mean) ** 2) / (2 * variance));
+                const y = 300 - val * store.galton.total * 20;
+                if (k === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+        }
+
+        function updateGaltonChart() {
+            const bins = store.galton.bins;
+            const labels = bins.map((_, i) => i);
+            charts.galton.data.labels = labels;
+            charts.galton.data.datasets[0].data = bins;
+            charts.galton.update();
+            document.getElementById('galtonTotal').innerText = store.galton.total;
+        }
+
+        function resetGalton() {
+            galtonRunning = false;
+            if (spawnInterval) clearInterval(spawnInterval);
+            galtonBalls = [];
+            galtonQueue = [];
+            store.galton = { bins: [], total: 0 };
+            charts.galton.data.labels = [];
+            charts.galton.data.datasets[0].data = [];
+            charts.galton.update();
+            const ctx = galtonCanvas.getContext('2d');
+            ctx.clearRect(0, 0, galtonCanvas.width, galtonCanvas.height);
+            document.getElementById('galtonTotal').innerText = '0';
+            drawPegsFast(ctx);
+        }
+
+        document.getElementById('runGaltonBtn').addEventListener('click', runGalton);
+        document.getElementById('resetGaltonBtn').addEventListener('click', resetGalton);
+
+        function resetData(type) {
+            if(type === 'coin') { store.coin = {h:0, t:0, total:0}; updateCoinUI(); }
+            if(type === 'dice') { store.dice = {f:[0,0,0,0,0,0], total:0}; updateDiceUI(); }
+            if(type === 'wheel') { 
+                store.wheel = {f:new Array(37).fill(0), total:0}; charts.wheel.data.datasets[0].data = store.wheel.f; 
+                charts.wheel.update(); document.getElementById('w-total').innerText = 0; document.getElementById('w-last').innerText = '-'; 
+            }
+            if(type === 'buffon') {
+                store.buffon = {total: 0, hits: 0, history: [], needles: []}; drawBuffonCanvas();
+                charts.buffon.data.labels = []; charts.buffon.data.datasets[0].data = []; charts.buffon.update();
+                document.getElementById('b-total').innerText = 0; document.getElementById('b-hits').innerText = 0; document.getElementById('b-pi').innerText = '0.0000';
+            }
+            document.getElementById(type+'ResText').innerText = "ДАННЫЕ ОЧИЩЕНЫ";
+        }
+
+        window.onload = function() {
+            drawBuffonCanvas();
+            initMonty();
+            updateDistribution();
+            resetGalton();
+            drawPegsFast(galtonCanvas.getContext('2d'));
+        };
+    </script>
+</body>
+</html>

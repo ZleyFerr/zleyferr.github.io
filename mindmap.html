@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Теория вероятностей | Карта понятий</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <script type="text/javascript" src="https://unpkg.com/vis-network@9.1.2/dist/vis-network.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+    
+    <style>
+        :root {
+            --bg-main: #F7F5F2; 
+            --card-bg: #FFFFFF;
+            --text-main: #1A1A1A;
+            --text-muted: #6B6863;
+            --accent: #2C3E35; 
+            --border-color: #E0DDD7;
+            --shadow: 0 4px 15px rgba(0,0,0,0.03);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        /* Navigation из стиля Тихая эстетика */
+       .navbar {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100% !important; /* На всю ширину */
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important; /* Лого влево, ссылки вправо */
+    align-items: center !important;
+    background: rgba(247, 245, 242, 0.95) !important;
+    backdrop-filter: blur(20px);
+    padding: 1.2rem 4rem !important; /* Отступы от краев экрана */
+    box-sizing: border-box !important;
+    z-index: 9999 !important;
+}
+
+.logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #1A1A1A;
+    text-decoration: none;
+    letter-spacing: -0.5px;
+    flex-shrink: 0 !important; /* Не даем логотипу сжиматься */
+}
+
+.nav-links {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    margin-left: auto !important; /* ЭТО ПРИНУДИТЕЛЬНО ТОЛКАЕТ КНОПКИ ВПРАВО */
+}
+
+.nav-links a {
+    text-decoration: none;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: #6B6863;
+    margin-left: 3rem !important; /* Расстояние МЕЖДУ кнопками */
+    transition: all 0.4s ease;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    position: relative;
+    padding-bottom: 4px;
+    white-space: nowrap !important;
+}
+
+.nav-links a:hover, 
+.nav-links a.active {
+    color: #1A1A1A !important;
+}
+
+/* Линия при наведении */
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 1px;
+    bottom: 0;
+    left: 0;
+    background-color: #1A1A1A;
+    transition: width 0.4s ease;
+}
+
+.nav-links a:hover::after,
+.nav-links a.active::after {
+    width: 100% !important;
+}
+        
+        /* Контейнер шире (1400px) */
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 3rem;
+            border: 1px solid var(--border-color);
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+        }
+        .subtitle { 
+            color: var(--text-muted); 
+            margin-bottom: 2.5rem; 
+            font-weight: 300;
+            font-size: 1.1rem;
+        }
+
+        #mindmap {
+            width: 100%;
+            height: 75vh;
+            border-radius: 4px;
+            background: #FDFBF9;
+            border: 1px solid #F0EDE8;
+        }
+
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(26, 26, 26, 0.4);
+            backdrop-filter: blur(8px);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 0; /* Строгий стиль */
+            max-width: 650px;
+            width: 90%;
+            padding: 3.5rem;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.12);
+            position: relative;
+            border: 1px solid var(--border-color);
+        }
+        .modal-close {
+            position: absolute;
+            right: 1.5rem; top: 1rem;
+            font-size: 2.5rem;
+            cursor: pointer;
+            color: #D1D1CB;
+            transition: 0.3s;
+        }
+        .modal-close:hover { color: var(--text-main); }
+
+        .modal h3 { 
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem; 
+            margin-bottom: 1.5rem; 
+            color: var(--text-main);
+        }
+        #modal-def { 
+            color: var(--text-main); 
+            margin-bottom: 2.5rem; 
+            line-height: 1.8;
+            font-size: 1.15rem;
+        }
+        #modal-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 4px;
+            transition: 0.3s;
+        }
+        #modal-link:hover { color: var(--accent); border-color: var(--accent); }
+
+        footer {
+            text-align: center;
+            padding: 4rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+            <a href="index.html" class="logo">Theoria.</a>
+            <div class="nav-links">
+                <a href="index.html">Шпаргалки</a>
+                <a href="simulations.html">Симуляции</a>
+                <a href="mindmap.html" class="active">Карта понятий</a>
+                <a href="practice.html">Практикум</a>
+                <a href="applications.html">Применение</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h1>Карта понятий</h1>
+            <div class="subtitle">Интерактивная структура связей. Кликните на узел для изучения.</div>
+            <div id="mindmap"></div>
+        </div>
+    </div>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h3 id="modal-title"></h3>
+            <div id="modal-def"></div>
+            <a href="index.html" id="modal-link">Перейти к справочнику</a>
+        </div>
+    </div>
+
+    <script>
+        // Полностью сохраненные данные узлов из твоего оригинала
+        const nodes = new vis.DataSet([
+            { id: 1, label: "Испытание", group: "base", definition: "Опытом (\\(\\sigma\\)) или испытанием или экспериментом называется выполнение определенного комплекса условий." },
+            { id: 2, label: "Событие", group: "base", definition: "Событием называется результат опыта." },
+            { id: 3, label: "Классическая\nвероятность", group: "core", definition: "Вероятностью \\(P(A)\\) события \\(A\\) называют отношение числа \\(m\\) благоприятствующих исходов к общему числу \\(n\\) равновозможных исходов: <br> $$P(A) = \\frac{m}{n}$$" },
+            { id: 4, label: "Геометрическая\nвероятность", group: "core", definition: "Вероятностью события \\(A\\) называют число \\(P(A)\\), равное отношению меры \\(\\mu(A)\\) множества \\(A\\) к мере множества \\(\\Omega\\): <br> $$P(A) = \\frac{\\mu(A)}{\\mu(\\Omega)}$$" },
+            { id: 5, label: "Схема Бернулли", group: "distr", definition: "Конечная серия повторных независимых испытаний с двумя исходами: успех \\(A\\) и неуспех \\(\\bar{A}\\). Вероятность успеха \\(p\\) постоянна, \\(q = 1 - p\\)." },
+            { id: 6, label: "Биномиальное\nраспределение", group: "distr", definition: "ДСВ \\(X\\), принимающая значения \\(m = 0, 1, ..., n\\) с вероятностью: <br> $$P_n(m) = C_n^m p^m q^{n-m}$$ Характеристики: \\(M(X) = np\\), \\(D(X) = npq\\)." },
+            { id: 7, label: "Распределение\nПуассона", group: "distr", definition: "Предельный случай биномиального при \\(n \\to \\infty, p \\to 0, np = \\lambda\\). <br> $$P(X=m) = \\frac{\\lambda^m e^{-\\lambda}}{m!}$$ Характеристики: \\(M(X) = \\lambda, D(X) = \\lambda\\)." },
+            { id: 8, label: "Геометрическое\nраспределение", group: "distr", definition: "Число испытаний до первого успеха: <br> $$P(X=k) = q^{k-1}p, \\quad k=1,2,...$$ Характеристики: \\(M(X) = \\frac{1}{p}, D(X) = \\frac{q}{p^2}\\)." },
+            { id: 9, label: "Гипергеометрическое\nраспределение", group: "distr", definition: "Вероятность \\(m\\) успехов в выборке без возвращения: <br> $$P(X=m) = \\frac{C_M^m C_{N-M}^{n-m}}{C_N^n}$$" },
+            { id: 10, label: "ДСВ", group: "rv", definition: "Случайная величина называется дискретной, если множество её значений конечно или счётно." },
+            { id: 11, label: "Мат. ожидание", group: "rv", definition: "Сумма произведений всех значений ДСВ на их вероятности: <br> $$M(X) = \\sum p_i x_i$$ Для НСВ: <br> $$M(X) = \\int_{-\\infty}^{\\infty} x f(x) dx$$" },
+            { id: 12, label: "Дисперсия", group: "rv", definition: "Мера разброса: <br> $$D(X) = M[(X - M(X))^2]$$ Удобная формула: <br> $$D(X) = M(X^2) - [M(X)]^2$$" },
+            { id: 13, label: "НСВ", group: "nsv", definition: "Случайная величина \\(X\\) называется непрерывной, если её функция распределения непрерывна и дифференцируема всюду." },
+            { id: 14, label: "Плотность\nвероятности", group: "nsv", definition: "Производная от функции распределения: <br> $$f(x) = F'(x)$$ Свойство нормировки: <br> $$\\\\int_{-\\\\infty}^{\\\\infty} f(x) dx = 1$$" },
+            { id: 15, label: "Функция\nраспределения", group: "nsv", definition: "Вероятность того, что СВ примет значение меньше \\(x\\): <br> $$F(x) = P(X < x)$$ Для НСВ: <br> $$F(x) = \\int_{-\\infty}^{x} f(t) dt$$" },
+            { id: 16, label: "Равномерное\nраспределение", group: "cont", definition: "\\(X \\sim R[a, b]\\). Плотность: <br> $$f(x) = \\frac{1}{b-a}, \\, x \\in [a, b]$$ Характеристики: \\(M(X) = \\frac{a+b}{2}, D(X) = \\frac{(b-a)^2}{12}\\)." },
+            { id: 17, label: "Показательное\nраспределение", group: "cont", definition: "\\(X \\sim Exp(\\lambda)\\). Плотность: <br> $$f(x) = \\lambda e^{-\\lambda x}, \\, x \\ge 0$$ Характеристики: \\(M(X) = \\frac{1}{\\lambda}, D(X) = \\frac{1}{\\lambda^2}\\)." },
+            { id: 18, label: "Нормальное\nраспределение", group: "cont", definition: "\\(X \\sim N(a, \\sigma)\\). Плотность Гаусса: <br> $$f(x) = \\frac{1}{\\sigma\\sqrt{2\\pi}} e^{-\\frac{(x-a)^2}{2\\sigma^2}}$$" },
+            { id: 19, label: "ЗБЧ", group: "limit", definition: "Утверждает устойчивость средних значений при \\(n \\to \\infty\\). Например, теорема Чебышева: <br> $$P(|\\bar{X} - M(X)| < \\epsilon) \\to 1$$" },
+            { id: 20, label: "ЦПТ", group: "limit", definition: "Утверждает, что сумма большого числа независимых величин распределена нормально: <br> $$\\\\sum X_i \\\\approx N(na, \\\\sigma\\\\sqrt{n})$$" }
+        ]);
+
+        // Сохраненные связи
+        const edges = new vis.DataSet([
+            { from: 1, to: 2 }, { from: 2, to: 3 }, { from: 2, to: 4 },
+            { from: 3, to: 5 }, { from: 5, to: 6 }, { from: 5, to: 7 },
+            { from: 5, to: 8 }, { from: 5, to: 9 }, { from: 6, to: 10 },
+            { from: 7, to: 10 }, { from: 8, to: 10 }, { from: 9, to: 10 },
+            { from: 10, to: 11 }, { from: 10, to: 12 }, { from: 11, to: 13 },
+            { from: 12, to: 13 }, { from: 13, to: 14 }, { from: 13, to: 15 },
+            { from: 14, to: 16 }, { from: 14, to: 17 }, { from: 14, to: 18 },
+            { from: 18, to: 20 }, { from: 19, to: 20 }
+        ]);
+
+        const options = {
+            nodes: {
+                shape: 'dot',
+                size: 20,
+                font: { face: 'Inter', size: 14, color: '#1A1A1A', bold: true },
+                borderWidth: 2,
+                shadow: { enabled: true, color: 'rgba(0,0,0,0.05)', size: 5, x: 2, y: 2 }
+            },
+            edges: {
+                arrows: { to: { enabled: true, scaleFactor: 0.5 } },
+                smooth: { type: 'cubicBezier', roundness: 0.5 },
+                color: { color: '#E0DDD7', highlight: '#2C3E35' },
+                width: 1.5
+            },
+            physics: {
+                enabled: true,
+                solver: 'forceAtlas2Based',
+                forceAtlas2Based: { gravitationalConstant: -100, centralGravity: 0.01, springLength: 150, springConstant: 0.08, avoidOverlap: 1 }
+            },
+            groups: {
+                base: { color: { background: '#EAE5DC', border: '#8C7851' } },
+                core: { color: { background: '#F5F2EB', border: '#D4AF37' } },
+                distr: { color: { background: '#E6F0E9', border: '#2C3E35' } },
+                rv: { color: { background: '#F9F0F0', border: '#A64D4D' } },
+                nsv: { color: { background: '#F0F3F9', border: '#4D6BA6' } },
+                cont: { color: { background: '#FDF9F0', border: '#B8860B' } },
+                limit: { color: { background: '#F4F4F4', border: '#333333' } }
+            }
+        };
+
+        const container = document.getElementById('mindmap');
+        const network = new vis.Network(container, { nodes, edges }, options);
+
+        // --- КРУГОВАЯ АНИМАЦИЯ КАМЕРЫ ---
+        // --- АНИМАЦИЯ ВРАЩЕНИЯ (ИСПРАВЛЕННАЯ) ---
+        let angle = 0;
+        function rotateCamera() {
+            angle += 0.005; // Скорость по часовой стрелке
+            
+            network.moveTo({
+                position: { 
+                    // Уменьшил радиус до 40, чтобы узлы не уходили за края
+                    x: Math.cos(angle) * 40, 
+                    y: Math.sin(angle) * 40 
+                },
+                // Поддерживаем текущий масштаб
+                scale: network.getScale(),
+                animation: false
+            });
+            requestAnimationFrame(rotateCamera);
+        }
+
+        network.once('stabilized', () => {
+            // Масштабируем так, чтобы граф занимал 70% высоты (запас 30% на анимацию)
+            network.fit({
+                animation: { duration: 1500 }
+            });
+            
+            // Дополнительно чуть отдаляем камеру сразу после fit, чтобы создать безопасную зону
+            setTimeout(() => {
+                const currentScale = network.getScale();
+                network.moveTo({
+                    scale: currentScale * 0.85, // Уменьшаем зум на 15% для запаса места
+                    animation: { duration: 1000 }
+                });
+            }, 1500);
+
+            // Запуск вращения
+            setTimeout(rotateCamera, 2600);
+        });
+
+        // Работа с модалкой
+        const modal = document.getElementById('modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalDef = document.getElementById('modal-def');
+        const closeBtn = document.querySelector('.modal-close');
+
+        network.on('click', function(params) {
+            if (params.nodes.length > 0) {
+                const nodeData = nodes.get(params.nodes[0]);
+                modalTitle.innerText = nodeData.label.replace('\n', ' ');
+                modalDef.innerHTML = nodeData.definition;
+                modal.style.display = 'flex';
+                if (window.MathJax) MathJax.typesetPromise([modalDef]);
+            }
+        });
+
+        closeBtn.onclick = () => modal.style.display = 'none';
+        window.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
+    </script>
+</body>
+</html>

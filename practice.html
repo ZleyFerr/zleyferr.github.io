@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Теория вероятностей | Интерактивный практикум</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+            options: { ignoreHtmlClass: 'no-mathjax' }
+        };
+    </script>
+    <style>
+        :root {
+            --bg-main: #F7F5F2; 
+            --card-bg: #FFFFFF;
+            --text-main: #1A1A1A;
+            --text-muted: #6B6863;
+            --accent-dark: #2C2A28;
+            --accent-light: #EBE5DD;
+            --success: #3A5A40;
+            --shadow-soft: 0 12px 40px rgba(0, 0, 0, 0.04);
+            --shadow-hover: 0 20px 50px rgba(0, 0, 0, 0.08);
+            --radius-lg: 24px;
+            --radius-sm: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.7;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .navbar {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100% !important; /* На всю ширину */
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important; /* Лого влево, ссылки вправо */
+    align-items: center !important;
+    background: rgba(247, 245, 242, 0.95) !important;
+    backdrop-filter: blur(20px);
+    padding: 1.2rem 4rem !important; /* Отступы от краев экрана */
+    box-sizing: border-box !important;
+    z-index: 9999 !important;
+}
+
+.logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #1A1A1A;
+    text-decoration: none;
+    letter-spacing: -0.5px;
+    flex-shrink: 0 !important; /* Не даем логотипу сжиматься */
+}
+
+.nav-links {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    margin-left: auto !important; /* ЭТО ПРИНУДИТЕЛЬНО ТОЛКАЕТ КНОПКИ ВПРАВО */
+}
+
+.nav-links a {
+    text-decoration: none;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: #6B6863;
+    margin-left: 3rem !important; /* Расстояние МЕЖДУ кнопками */
+    transition: all 0.4s ease;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    position: relative;
+    padding-bottom: 4px;
+    white-space: nowrap !important;
+}
+
+.nav-links a:hover, 
+.nav-links a.active {
+    color: #1A1A1A !important;
+}
+
+/* Линия при наведении */
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 1px;
+    bottom: 0;
+    left: 0;
+    background-color: #1A1A1A;
+    transition: width 0.4s ease;
+}
+
+.nav-links a:hover::after,
+.nav-links a.active::after {
+    width: 100% !important;
+}
+        .container {
+            max-width: 1400px;
+            margin: 3rem auto;
+            padding: 0 24px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: 1px solid var(--accent-light);
+            color: var(--text-muted);
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 0.8rem 2rem;
+            cursor: pointer;
+            border-radius: 40px;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .tab-btn:hover { border-color: var(--text-muted); color: var(--text-main); }
+        .tab-btn.active {
+            background: var(--text-main);
+            color: white;
+            border-color: var(--text-main);
+            box-shadow: 0 8px 20px rgba(26, 26, 26, 0.15);
+        }
+
+        .tab-pane { display: none; }
+        .tab-pane.active { display: block; animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tasks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+            gap: 2rem;
+        }
+
+        .task-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 2.5rem;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            box-shadow: var(--shadow-soft);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(0,0,0,0.02);
+            opacity: 0;
+            animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .task-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .task-topic {
+            align-self: flex-start;
+            background: var(--accent-light);
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.4rem 1.2rem;
+            border-radius: 30px;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .task-question {
+            font-weight: 400;
+            font-size: 1.1rem;
+            color: var(--text-main);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            flex-grow: 1;
+        }
+
+        .task-answer, .task-solution {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: var(--bg-main);
+            border-radius: var(--radius-sm);
+            display: none;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            border-left: 3px solid var(--accent-light);
+            animation: slideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .task-answer.show, .task-solution.show { display: block; }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: auto;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.7rem 1.8rem;
+            border-radius: 40px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-primary {
+            background: var(--text-main);
+            color: white;
+            border: 1px solid var(--text-main);
+        }
+
+        .btn-primary:hover {
+            background: #333;
+            border-color: #333;
+            transform: scale(1.02);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #D9D9D9;
+            color: var(--text-main);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--text-main);
+            background: var(--bg-main);
+        }
+
+        .hint-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin: 1.5rem 0 0.5rem 0;
+            flex-wrap: wrap;
+        }
+
+        .hint-btn {
+            background: transparent;
+            border: 1px dashed var(--text-muted);
+            color: var(--text-muted);
+            padding: 0.5rem 1.2rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .hint-btn:hover {
+            color: var(--text-main);
+            border-color: var(--text-main);
+            background: var(--bg-main);
+        }
+
+        .hint-text {
+            background: var(--bg-main);
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius-sm);
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            display: none;
+        }
+        
+        .hint-text.show { display: block; animation: slideDown 0.3s; }
+
+        .calc-section {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 3.5rem;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .calc-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+        }
+
+        .calc-input, .calc-select {
+            width: 100%;
+            padding: 1.2rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid #E0DCD6;
+            background: var(--bg-main);
+            color: var(--text-main);
+            transition: 0.3s;
+            font-family: inherit;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .calc-input::placeholder { color: #A3A09A; }
+
+        .calc-input:focus, .calc-select:focus {
+            border-color: var(--text-main);
+            outline: none;
+            background: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        }
+
+        .calc-result {
+            background: var(--bg-main);
+            color: var(--text-main);
+            padding: 2rem;
+            border-radius: var(--radius-sm);
+            white-space: pre-wrap;
+            min-height: 200px;
+            border: 1px solid #E0DCD6;
+        }
+
+        h3 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-main);
+        }
+
+        footer {
+            text-align: center;
+            padding: 4rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #D9D9D9; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #A3A09A; }
+
+        @media (max-width: 900px) {
+            .tasks-grid, .calc-grid { grid-template-columns: 1fr; gap: 2rem; }
+            .calc-section { padding: 2rem; }
+            .navbar { flex-direction: column; padding: 1rem; gap: 1rem; }
+            .nav-links a { margin: 0 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="#" class="logo">Theoria.</a>
+        <div class="nav-links">
+            <a href="index.html">Шпаргалки</a>
+            <a href="simulations.html">Симуляции</a>
+            <a href="mindmap.html">Карта понятий</a>
+            <a href="#" class="active">Практикум</a>
+            <a href="applications.html">Применение</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="tasks">Задачи по темам (20)</button>
+            <button class="tab-btn" data-tab="calc">Интеллектуальный калькулятор</button>
+            <button class="tab-btn" data-tab="hint">Задачник с подсказками</button>
+        </div>
+
+        <div id="tasks-tab" class="tab-pane active">
+            <div class="tasks-grid" id="tasksGrid"></div>
+        </div>
+
+        <div id="calc-tab" class="tab-pane">
+            <div class="calc-section">
+                <div class="calc-grid">
+                    <div>
+                        <h3>Свободный ввод условия</h3>
+                        <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom: 1.5rem;">
+                            Опишите задачу естественным языком. Например: "В урне 5 белых и 3 черных шара, мы вынимаем 2 шара наугад".
+                        </p>
+                        <textarea id="calcTextInput" class="calc-input" rows="5" placeholder="Напишите условие задачи..."></textarea>
+                        <button id="calcBtn" class="btn btn-primary" style="width:100%; padding: 1.2rem;">
+                            Рассчитать вероятность
+                        </button>
+                    </div>
+                    <div>
+                        <h3>Результат и решение</h3>
+                        <div id="calcResult" class="calc-result">
+                            <div style="color: var(--text-muted); text-align: center; display: block; width: 100%; margin-top: 3rem; opacity: 0.7;">
+                               
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top:4rem; padding-top: 3rem; border-top: 1px solid var(--accent-light);">
+                    <h3>Ручная настройка параметров</h3>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem;">
+                        <select id="calcType" class="calc-select" style="flex:1; margin-bottom: 0;">
+                            <option value="balls">Шары (выборка без возвращения)</option>
+                            <option value="dice">Игральные кости (сумма очков)</option>
+                            <option value="cards">Карты (колода 36 листов)</option>
+                            <option value="coin">Монета (серия бросков)</option>
+                            <option value="bernoulli">Схема Бернулли</option>
+                            <option value="bayes">Формула Байеса</option>
+                        </select>
+                        <button id="calcTypeBtn" class="btn btn-primary">Применить шаблон</button>
+                    </div>
+                    <div id="calcDynamicInputs" style="margin-top: 1.5rem;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="hint-tab" class="tab-pane">
+            <div class="tasks-grid" id="hintGrid"></div>
+        </div>
+    </div>
+    
+    <footer>© 2026 Theoria. Эстетика точных наук.</footer>
+
+    <script>
+        // Функция для принудительного рендеринга формул
+        function renderMath() {
+            if (window.MathJax) {
+                MathJax.typesetPromise().catch(err => console.log('MathJax error:', err));
+            }
+        }
+
+        // Вспомогательная функция для сочетаний
+        function C(n, k) {
+            if(k<0 || k>n) return 0;
+            let res=1;
+            for(let i=1; i<=k; i++) res = res * (n - i + 1) / i;
+            return res;
+        }
+
+        // ---------- ЗАДАЧИ ПО ТЕМАМ ----------
+        const topicTasks = [
+            { topic: "Комбинаторика", question: "Сколькими способами можно составить код из 4 цифр для ячейки камеры хранения (цифры от 0 до 9)?", answer: "10 000", solution: "На каждую из 4 позиций можно поставить любую из 10 цифр. По правилу умножения: $$N = 10 \\cdot 10 \\cdot 10 \\cdot 10 = 10^4 = 10\\,000.$$" },
+            { topic: "Комбинаторика", question: "На полке стоят 4 книги по математике, 2 по физике и 3 по химии. Сколько способов выбрать книгу не по химии?", answer: "6", solution: "Книг не по химии: $4+2=6$. По правилу сложения (выбор одной книги) – 6 способов." },
+            { topic: "Комбинаторика", question: "Сколько различных трёхзначных чисел можно составить из цифр 1, 2, 3 без повторений?", answer: "6", solution: "Все три цифры различны, порядок важен – используем перестановки: $$P_3 = 3! = 3\\cdot2\\cdot1 = 6.$$" },
+            { topic: "Комбинаторика", question: "Из 15 книг нужно выбрать 3 для поездки. Сколькими способами это можно сделать?", answer: "455", solution: "Порядок выбора не имеет значения – используем сочетания: $$C_{15}^3 = \\frac{15!}{3!12!} = \\frac{15\\cdot14\\cdot13}{1\\cdot2\\cdot3} = 455.$$" },
+            { topic: "Классическая вероятность", question: "Бросают одну игральную кость. Какова вероятность выпадения чётного числа очков?", answer: "0.5", solution: "Всего исходов $n=6$, благоприятных $m=3$ (2,4,6). $$P = \\frac{3}{6} = 0.5.$$" },
+            { topic: "Геометрическая вероятность", question: "Два человека договорились встретиться между 12:00 и 13:00. Каждый ждёт другого 5 минут. Найти вероятность встречи.", answer: "≈ 0.1597", solution: "Область встречи – квадрат 60×60. Условие встречи $|x-y|\\le5$. Площадь полосы: $60^2 - 55^2 = 575$. $$P = \\frac{575}{3600} \\approx 0.1597.$$" },
+            { topic: "Теорема сложения", question: "Вероятность попадания первого стрелка 0.6, второго – 0.8. Найти вероятность того, что мишень будет поражена хотя бы один раз.", answer: "0.92", solution: "События независимы. Вероятность промаха обоих: $$P = 1 - (1-0.6)(1-0.8) = 1 - 0.4\\cdot0.2 = 0.92.$$" },
+            { topic: "Теорема умножения", question: "В урне 2 белых и 3 чёрных шара. Вынимают два шара последовательно без возвращения. Найти вероятность того, что оба окажутся белыми.", answer: "0.1", solution: "$$P = \\frac{2}{5} \\cdot \\frac{1}{4} = \\frac{2}{20} = 0.1.$$" },
+            { topic: "Формула полной вероятности", question: "В первой урне 3 белых и 2 чёрных шара, во второй – 4 белых и 4 чёрных. Из наудачу выбранной урны берут шар. Найти вероятность того, что он белый.", answer: "0.55", solution: "Гипотезы: $H_1$ – выбрана 1-я урна, $H_2$ – 2-я. $P(H_1)=P(H_2)=0.5$. Условные вероятности: $P(A|H_1)=3/5=0.6$, $P(A|H_2)=4/8=0.5$. $$P(A)=0.5\\cdot0.6+0.5\\cdot0.5=0.55.$$" },
+            { topic: "Формула Байеса", question: "Из тех же урн (см. предыдущую задачу) вынули белый шар. Какова вероятность того, что он был извлечен из первой урны?", answer: "≈ 0.5455", solution: "По формуле Байеса: $$P(H_1|A)=\\frac{P(H_1)P(A|H_1)}{P(A)}=\\frac{0.5\\cdot0.6}{0.55}=\\frac{0.3}{0.55}\\approx0.5455.$$" },
+            { topic: "Схема Бернулли", question: "Монету бросают 5 раз. Найти вероятность выпадения ровно 3 орлов.", answer: "0.3125", solution: "$$P_5(3)=C_5^3\\cdot(0.5)^3\\cdot(0.5)^2 = 10\\cdot\\frac{1}{32}=0.3125.$$" },
+            { topic: "Схема Бернулли", question: "Вероятность выигрыша по одному билету равна 0.3. Куплено 15 билетов. Найти наивероятнейшее число выигрышей.", answer: "4 или 5", solution: "Используем формулу $np-q \\le k_0 \\le np+p$. $$15\\cdot0.3-0.7 = 3.8,\\quad 15\\cdot0.3+0.3=4.8.$$ Целые значения в интервале [3.8; 4.8]: 4 и 5." },
+            { topic: "ДСВ", question: "Закон распределения дискретной случайной величины X задан таблично (значения: 1, 2, 3; вероятности: 0.2, 0.5, 0.3). Найти математическое ожидание M(X) и дисперсию D(X).", answer: "$M(X)=2.1$, $D(X)=0.49$", solution: "$$M(X)=1\\cdot0.2+2\\cdot0.5+3\\cdot0.3=0.2+1.0+0.9=2.1.$$ $$M(X^2)=1^2\\cdot0.2+2^2\\cdot0.5+3^2\\cdot0.3=0.2+2.0+2.7=4.9.$$ $$D(X)=M(X^2)-(M(X))^2=4.9-2.1^2=4.9-4.41=0.49.$$" },
+            { topic: "НСВ", question: "Задана плотность распределения непрерывной случайной величины $f(x)=2x$ на отрезке $[0,1]$. Найти математическое ожидание $M(X)$.", answer: "$\\frac{2}{3}$", solution: "$$M(X)=\\int_0^1 x\\cdot f(x)\\,dx = \\int_0^1 2x^2 dx = \\left[\\frac{2x^3}{3}\\right]_0^1 = \\frac{2}{3}.$$" },
+            { topic: "Нормальное распределение", question: "Случайная величина X распределена по стандартному нормальному закону с математическим ожиданием 0 и средним квадратическим отклонением 1. Найдите вероятность того, что значение этой величины попадет в интервал от -1 до 1.", answer: "0.6826", solution: "Используем функцию Лапласа $\\Phi(x)$: $$P(-1 < X < 1) = \\Phi(1)-\\Phi(-1)=2\\Phi(1)=2\\cdot0.34134=0.68268 \\approx 0.6827.$$" },
+            { topic: "Нормальное распределение", question: "Случайная величина X подчиняется нормальному закону распределения с математическим ожиданием 30 и стандартным отклонением 10. Найдите вероятность того, что её значение окажется в пределах от 10 до 50.", answer: "0.9544", solution: "Нормируем границы интервала и используем функцию Лапласа: $$P(10 < X < 50) = \\Phi\\left(\\frac{50-30}{10}\\right)-\\Phi\\left(\\frac{10-30}{10}\\right)=\\Phi(2)-\\Phi(-2)=2\\Phi(2)=2\\cdot0.4772=0.9544.$$" },
+            { topic: "ЦПТ", question: "Вычисляется среднее арифметическое 3200 независимых случайных величин с математическим ожиданием 3 и дисперсией 2. Найти вероятность того, что это выборочное среднее попадет в интервал (2.95; 3.075).", answer: "≈ 0.9759", solution: "Стандартное отклонение среднего: $$\\sigma_{\\bar X}=\\sqrt{\\frac{2}{3200}}=0.025.$$ По ЦПТ: $$P = \\Phi\\left(\\frac{3.075-3}{0.025}\\right)-\\Phi\\left(\\frac{2.95-3}{0.025}\\right)=\\Phi(3)-\\Phi(-2)=0.49865+0.47725=0.9759.$$" },
+            { topic: "Матстатистика", question: "Получены результаты измерений: 32, 33, 34, 35, 36. Найти исправленную выборочную дисперсию.", answer: "2.5", solution: "Выборочное среднее $\\bar x = 34$. Сумма квадратов отклонений от среднего: $$\\sum (x_i-\\bar x)^2 = (-2)^2+(-1)^2+0^2+1^2+2^2 = 4+1+0+1+4=10.$$ $$s^2 = \\frac{10}{n-1} = \\frac{10}{5-1}=2.5.$$" },
+            { topic: "Матстатистика", question: "Дана выборка: 3, 6, 7, 5, 4, 2, 5, 2, 3, 4. Найти выборочное среднее и исправленную дисперсию.", answer: "$\\bar x=4.1$, $s^2\\approx2.77$", solution: "$$\\bar x = \\frac{41}{10}=4.1.$$ $$\\sum (x_i-\\bar x)^2 = 24.9,\\quad s^2=\\frac{24.9}{9}\\approx2.7667.$$" },
+            { topic: "Геометрическая вероятность", question: "В квадрат со стороной 10 наудачу бросают точку. Найти вероятность того, что она попадёт во вписанный в этот квадрат круг.", answer: "$\\pi/4 \\approx 0.785$", solution: "Площадь квадрата равна $100$, площадь вписанного круга (радиус 5) равна $25\\pi$. $$P = \\frac{S_{круга}}{S_{квадрата}} = \\frac{25\\pi}{100}=\\frac{\\pi}{4}.$$" }
+        ];
+
+        // ---------- ЗАДАЧНИК С ПОДСКАЗКАМИ ----------
+        const hintTasks = [
+            { topic: "Комбинаторика", question: "Сколько существует способов выбрать делегацию из 3 человек из группы в 12 человек?", answer: "220", solution: "Порядок не важен, сочетания: $C_{12}^3 = 220$.", hints: ["Нужно выбрать 3 объекта из 12, порядок не имеет значения.", "Используйте формулу сочетаний $C_n^k = \\frac{n!}{k!(n-k)!}$.", "Подставьте n=12, k=3.", "Вычислите $\\frac{12\\cdot11\\cdot10}{3\\cdot2\\cdot1}=220$."] },
+            { topic: "Классическая вероятность", question: "Из колоды 36 карт вынимают одну карту. Найти вероятность того, что это туз или пиковая дама.", answer: "5/36 ≈ 0.1389", solution: "Всего карт 36. Туз – 4 карты, пиковая дама – 1 карта (не входит в тузов). Благоприятных 4+1=5. $P=5/36$.", hints: ["Определите общее число возможных исходов (36 карт).", "Посчитайте, сколько в колоде тузов и сколько пиковых дам. Не пересекаются ли эти множества?", "Благоприятных исходов 4 + 1 = 5.", "$P = \\frac{5}{36}$."] },
+            { topic: "Теорема сложения", question: "Вероятность того, что студент сдаст экзамен по теории вероятностей – 0.8, по матанализу – 0.7. Найти вероятность успешной сдачи хотя бы одного экзамена (считаем события независимыми).", answer: "0.94", solution: "$P=0.8+0.7-0.8\\cdot0.7=0.94$.", hints: ["Используйте теорему сложения: $P(A\\cup B)=P(A)+P(B)-P(A\\cap B)$.", "Для независимых событий $P(A\\cap B)=P(A)\\cdot P(B)$.", "Вероятность сдать оба экзамена: $0.8\\cdot0.7=0.56$.", "Подставляем: $0.8+0.7-0.56=0.94$."] },
+            { topic: "Формула полной вероятности", question: "В первой партии 90% стандартных деталей, во второй – 80%. На склад поступает деталь из случайно выбранной партии (выбор любой из партий равновероятен). Найти вероятность того, что деталь стандартная.", answer: "0.85", solution: "$P=0.5\\cdot0.9+0.5\\cdot0.8=0.45+0.4=0.85$.", hints: ["Гипотезы: $H_1$ – деталь из первой партии, $H_2$ – из второй.", "Вероятности гипотез: $P(H_1)=P(H_2)=0.5$.", "Условные вероятности стандарта: 0.9 и 0.8.", "По формуле: $P=0.5\\cdot0.9+0.5\\cdot0.8=0.85$."] },
+            { topic: "Схема Бернулли", question: "Считая вероятность рождения девочки равной 0.5, найдите вероятность того, что в семье из 4 детей будет ровно 2 девочки.", answer: "0.375", solution: "$P_4(2)=C_4^2\\cdot0.5^4=6\\cdot1/16=0.375$.", hints: ["В задаче $n=4$, $k=2$, вероятность успеха $p=0.5$.", "Примените формулу Бернулли: $P_n(k)=C_n^k p^k q^{n-k}$.", "Количество сочетаний: $C_4^2=6$. Вероятности: $(0.5)^4=1/16$.", "Итог: $6 \\cdot \\frac{1}{16}=0.375$."] },
+            { topic: "ДСВ", question: "Закон распределения задан таблично: X: 0, 1, 2; p: 0.2, 0.5, 0.3. Найти вероятность того, что $X > 0$, и математическое ожидание $M(X)$.", answer: "$P=0.8$, $M=1.1$", solution: "$P(X>0)=0.5+0.3=0.8$, $M=0\\cdot0.2+1\\cdot0.5+2\\cdot0.3=1.1$.", hints: ["Событие $X>0$ включает в себя исходы, когда X равно 1 или 2.", "Формула математического ожидания: $M(X)=\\sum x_i p_i$.", "$M(X) = 0\\cdot0.2+1\\cdot0.5+2\\cdot0.3=1.1$.", "Ответы: 0.8 и 1.1."] },
+            { topic: "НСВ", question: "Дана плотность распределения вероятностей $f(x)=3x^2$ на отрезке $[0,1]$. Вне этого отрезка плотность равна нулю. Найти $M(X)$.", answer: "0.75", solution: "$M(X)=\\int_0^1 x\\cdot3x^2 dx = \\int_0^1 3x^3 dx = \\left[\\frac{3x^4}{4}\\right]_0^1 = 0.75$.", hints: ["Математическое ожидание для НСВ: $M(X)=\\int x f(x) dx$.", "Пределы интегрирования от 0 до 1.", "Вычислите интеграл: $\\int_0^1 3x^3 dx$.", "Результат: $3/4$ или $0.75$."] },
+            { topic: "Нормальное распределение", question: "Случайная величина X имеет стандартное нормальное распределение (математическое ожидание 0, стандартное отклонение 1). Найдите вероятность того, что её абсолютное значение превысит 1.", answer: "0.3174", solution: "$P(|X|>1)=1-P(|X|<1)=1-0.6826=0.3174$.", hints: ["Используйте правило противоположного события: $P(|X|>1)=1-P(-1 < X < 1)$.", "Вероятность попадания в интервал (-1; 1) равна $2\\Phi(1)=0.6826$.", "Вычтите из единицы: $1-0.6826$.", "Искомая вероятность ≈0.3174."] },
+            { topic: "ЦПТ", question: "Рассматривается сумма 400 независимых одинаково распределенных случайных величин, каждая из которых имеет математическое ожидание 2 и дисперсию 1. Найти вероятность того, что эта сумма окажется строго меньше 820.", answer: "≈ 0.8413", solution: "$M(S)=800$, $\\sigma(S)=20$. $P(S<820)=\\Phi((820-800)/20)=\\Phi(1)=0.8413$.", hints: ["Характеристики суммы: $M(S)=n\\cdot M=800$, $\\sigma(S)=\\sqrt{n\\cdot D}=\\sqrt{400}=20$.", "Выполните нормирование (Z-преобразование): $Z = \\frac{820-800}{20} = 1$.", "Найдите вероятность по таблице функции Лапласа: $\\Phi(1) = 0.8413$.", "Ответ: ≈ 0.8413."] },
+            { topic: "Матстатистика", question: "Дана выборка: 1, 3, 5, 7, 9. Вычислите исправленную выборочную дисперсию.", answer: "10", solution: "$\\bar x=5$, сумма квадратов отклонений: $16+4+0+4+16=40$, $s^2=40/4=10$.", hints: ["Сначала найдите выборочное среднее (оно равно 5).", "Рассчитайте отклонения каждого элемента от среднего: -4, -2, 0, 2, 4.", "Сумма квадратов отклонений: 16+4+0+4+16=40.", "Разделите на $(n-1)$: $s^2 = 40/4 = 10$."] },
+            { topic: "Геометрическая вероятность", question: "В круг радиуса 1 наудачу бросают точку. Найти вероятность того, что она попадёт в квадрат, который вписан в этот круг.", answer: "$2/\\pi \\approx 0.6366$", solution: "Площадь круга $\\pi$, площадь квадрата $2$. $P=2/\\pi$.", hints: ["Вычислите площадь всего круга: $S = \\pi R^2 = \\pi$.", "Найдите сторону вписанного квадрата по теореме Пифагора ($a = R\\sqrt{2} = \\sqrt{2}$).", "Площадь квадрата равна $2$.", "Отношение площадей: $P = 2/\\pi$."] },
+            { topic: "Теорема умножения", question: "В урне 5 белых и 5 чёрных шаров. Дважды вынимают по одному шару, возвращая первый шар обратно перед вторым извлечением. Найти вероятность того, что оба извлеченных шара окажутся белыми.", answer: "0.25", solution: "$P = (5/10)\\cdot(5/10)=0.25$.", hints: ["Вероятность вынуть белый шар при одном извлечении равна $5/10 = 0.5$.", "Из-за возвращения шара события независимы.", "Перемножьте вероятности: $P=0.5\\cdot0.5$.", "Ответ: 0.25."] },
+            { topic: "Формула Байеса", question: "В первой партии 95% стандартных деталей, во второй – 85%. Наугад выбрана одна деталь (партии равновероятны), и она оказалась стандартной. Какова вероятность того, что эта деталь была изготовлена на первом заводе?", answer: "≈ 0.5278", solution: "$P(A)=0.5\\cdot0.95+0.5\\cdot0.85=0.9$. $P(H_1|A)=\\frac{0.5\\cdot0.95}{0.9}=\\frac{0.475}{0.9}\\approx0.5278$.", hints: ["Найдите полную вероятность вытащить стандартную деталь: $P(A)=0.5\\cdot0.95+0.5\\cdot0.85=0.9$.", "Используйте формулу Байеса: $P(H_1|A) = \\frac{P(H_1)P(A|H_1)}{P(A)}$.", "Числитель: $0.5\\cdot0.95 = 0.475$.", "Вычислите отношение: $0.475 / 0.9 \\approx 0.5278$."] },
+            { topic: "Схема Бернулли", question: "Монету бросают 6 раз. Найти вероятность того, что орёл выпадет не менее 2 раз.", answer: "$57/64 \\approx 0.8906$", solution: "$P = 1 - P_6(0) - P_6(1) = 1 - 1/64 - 6/64 = 57/64$.", hints: ["Проще использовать противоположное событие: орел выпадет 0 или 1 раз.", "Найдите $P_6(0) = 1/64$ и $P_6(1) = 6/64$.", "Вычтите их сумму из единицы: $1 - (1/64 + 6/64)$.", "Итог: $57/64 \\approx 0.8906$."] },
+            { topic: "ДСВ", question: "Случайная величина X задана рядом распределения: X: -1, 0, 1; вероятности p: 0.2, 0.6, 0.2. Найти дисперсию $D(X)$.", answer: "0.4", solution: "$M(X)= -0.2+0+0.2=0$, $M(X^2)=1\\cdot0.2+0\\cdot0.6+1\\cdot0.2=0.4$, $D=0.4-0=0.4$.", hints: ["Сначала найдите математическое ожидание: $M(X) = -1\\cdot0.2 + 0 + 1\\cdot0.2 = 0$.", "Найдите матожидание квадрата: $M(X^2) = (-1)^2\\cdot0.2 + 0 + 1^2\\cdot0.2 = 0.4$.", "Примените формулу дисперсии: $D(X) = M(X^2) - (M(X))^2$.", "Ответ: 0.4."] },
+            { topic: "НСВ", question: "Плотность распределения вероятностей $f(x)=0.5$ на отрезке $[0,2]$ (равномерное распределение). Найти вероятность попадания величины X в интервал $(0.5; 1.5)$.", answer: "0.5", solution: "$P = \\int_{0.5}^{1.5} 0.5 dx = 0.5\\cdot(1.5-0.5)=0.5$.", hints: ["Это равномерное распределение, вероятность пропорциональна длине интервала.", "Длина интервала $(0.5; 1.5)$ равна 1.", "Умножьте длину интервала на плотность (0.5).", "$P = 1 \\cdot 0.5 = 0.5$."] },
+            { topic: "Нормальное распределение", question: "Случайная величина X распределена по нормальному закону с математическим ожиданием 5 и стандартным отклонением 2. Найдите вероятность того, что X примет значение больше 7.", answer: "≈ 0.1587", solution: "$P(X>7)=1-\\Phi((7-5)/2)=1-\\Phi(1)=1-0.8413=0.1587$.", hints: ["Проведите стандартизацию переменной: $Z = \\frac{X - \\mu}{\\sigma} = \\frac{7-5}{2}=1$.", "Нужно найти $P(Z > 1)$, что равно $1 - P(Z < 1)$.", "По таблице функции Лапласа: $\\Phi(1) = 0.8413$.", "Итоговая вероятность: $1 - 0.8413 = 0.1587$."] },
+            { topic: "Матстатистика", question: "Имеется выборка: 10, 12, 14, 16. Вычислите исправленную выборочную дисперсию.", answer: "≈ 6.6667", solution: "$\\bar x=13$, сумма квадратов отклонений: $9+1+1+9=20$, $s^2=20/3\\approx6.6667$.", hints: ["Найдите выборочное среднее (оно равно 13).", "Отклонения от среднего: -3, -1, 1, 3.", "Квадраты отклонений: 9, 1, 1, 9. Их сумма равна 20.", "Разделите на $(n-1)$: $s^2 = 20 / 3 \\approx 6.6667$."] },
+            { topic: "Закон больших чисел", question: "Используя неравенство Чебышёва, определите минимальное количество испытаний, чтобы с вероятностью не менее 0.95 частота события (с вероятностью успеха $p=0.5$) отличалась от 0.5 не более чем на 0.01.", answer: "n ≥ 5000", solution: "По неравенству Чебышёва: $P\\left(\\left|\\frac{m}{n}-p\\right|<\\varepsilon\\right) \\ge 1-\\frac{pq}{n\\varepsilon^2}$. Требуем $1-\\frac{0.25}{n\\cdot0.0001} \\ge 0.95$, отсюда $n\\ge 5000$.", hints: ["Формула Чебышёва для частоты: $P\\left(\\left|\\frac{m}{n}-p\\right|<\\varepsilon\\right) \\ge 1-\\frac{pq}{n\\varepsilon^2}$.", "Подставьте данные: $p=0.5$, $q=0.5$, $\\varepsilon=0.01$.", "Решите неравенство относительно правой части: $1-\\frac{0.25}{n\\cdot0.0001} \\ge 0.95$.", "Получаем: $\\frac{0.25}{0.0001 n} \\le 0.05$, откуда $n \\ge 5000$."] }
+        ];
+
+        // Рендер задач по темам
+        function renderTopicTasks() {
+            const container = document.getElementById('tasksGrid');
+            container.innerHTML = '';
+            topicTasks.forEach((task, idx) => {
+                const card = document.createElement('div');
+                card.className = 'task-card';
+                card.style.animationDelay = `${idx * 0.08}s`; 
+                card.innerHTML = `
+                    <div class="task-topic">${task.topic}</div>
+                    <div class="task-question">${task.question}</div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary show-answer" data-idx="${idx}">Показать ответ</button>
+                        <button class="btn btn-outline show-solution" data-idx="${idx}">Решение</button>
+                    </div>
+                    <div class="task-answer" id="answer-${idx}"><strong>Ответ:</strong> ${task.answer}</div>
+                    <div class="task-solution" id="solution-${idx}"><strong>Пошаговое решение:</strong><br>${task.solution}</div>
+                `;
+                container.appendChild(card);
+            });
+            attachTaskEvents();
+        }
+
+        function attachTaskEvents() {
+            document.querySelectorAll('#tasksGrid .show-answer').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const idx = btn.getAttribute('data-idx');
+                    const ansDiv = document.getElementById(`answer-${idx}`);
+                    if(ansDiv) {
+                        ansDiv.classList.toggle('show');
+                        setTimeout(() => renderMath(), 50);
+                    }
+                });
+            });
+            document.querySelectorAll('#tasksGrid .show-solution').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const idx = btn.getAttribute('data-idx');
+                    const solDiv = document.getElementById(`solution-${idx}`);
+                    if(solDiv) {
+                        solDiv.classList.toggle('show');
+                        setTimeout(() => renderMath(), 50);
+                    }
+                });
+            });
+        }
+
+        // Рендер задачника с подсказками
+        function renderHintTasks() {
+            const container = document.getElementById('hintGrid');
+            container.innerHTML = '';
+            hintTasks.forEach((task, idx) => {
+                const card = document.createElement('div');
+                card.className = 'task-card';
+                card.style.animationDelay = `${idx * 0.08}s`;
+                let hintsHtml = `<div class="hint-buttons">`;
+                for(let i=0; i<task.hints.length; i++) {
+                    hintsHtml += `<button class="hint-btn" data-idx="${idx}" data-hint="${i}">Подсказка ${i+1}</button>`;
+                }
+                hintsHtml += `</div><div class="hint-text" id="hintText-${idx}"></div>`;
+                card.innerHTML = `
+                    <div class="task-topic">${task.topic}</div>
+                    <div class="task-question">${task.question}</div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary show-answer-hint" data-idx="${idx}">Ответ</button>
+                        <button class="btn btn-outline show-solution-hint" data-idx="${idx}">Решение</button>
+                    </div>
+                    <div class="task-answer" id="hintAnswer-${idx}"><strong>Ответ:</strong> ${task.answer}</div>
+                    <div class="task-solution" id="hintSolution-${idx}"><strong>Решение:</strong><br>${task.solution}</div>
+                    ${hintsHtml}
+                `;
+                container.appendChild(card);
+            });
+            attachHintEvents();
+        }
+
+        function attachHintEvents() {
+            document.querySelectorAll('#hintGrid .show-answer-hint').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const idx = btn.getAttribute('data-idx');
+                    const ansDiv = document.getElementById(`hintAnswer-${idx}`);
+                    if(ansDiv) {
+                        ansDiv.classList.toggle('show');
+                        setTimeout(() => renderMath(), 50);
+                    }
+                });
+            });
+            document.querySelectorAll('#hintGrid .show-solution-hint').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const idx = btn.getAttribute('data-idx');
+                    const solDiv = document.getElementById(`hintSolution-${idx}`);
+                    if(solDiv) {
+                        solDiv.classList.toggle('show');
+                        setTimeout(() => renderMath(), 50);
+                    }
+                });
+            });
+            document.querySelectorAll('#hintGrid .hint-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const idx = btn.getAttribute('data-idx');
+                    const hintIdx = btn.getAttribute('data-hint');
+                    const hintTextDiv = document.getElementById(`hintText-${idx}`);
+                    if(hintTextDiv) {
+                        hintTextDiv.innerHTML = `<strong>Подсказка ${parseInt(hintIdx)+1}:</strong> ${hintTasks[idx].hints[hintIdx]}`;
+                        hintTextDiv.classList.add('show');
+                        setTimeout(() => renderMath(), 50);
+                        setTimeout(() => hintTextDiv.classList.remove('show'), 8000);
+                    }
+                });
+            });
+        }
+
+        // ========== КАЛЬКУЛЯТОР ВЕРОЯТНОСТЕЙ ==========
+        function parseProbability(text) {
+            text = text.toLowerCase();
+            if(text.includes('шар') && (text.includes('бел') || text.includes('черн'))) {
+                let white = parseInt(text.match(/(\d+)\s+бел/)?.[1]) || 5;
+                let black = parseInt(text.match(/(\d+)\s+черн/)?.[1]) || 3;
+                let draw = parseInt(text.match(/вынима[ею]\s+(\d+)/)?.[1]) || 2;
+                let prob = C(white, draw) / C(white+black, draw);
+                return { prob, formula: `$$P = \\frac{C_{${white}}^{${draw}}}{C_{${white+black}}^{${draw}}} = \\frac{${C(white,draw)}}{${C(white+black,draw)}} = ${prob.toFixed(6)}$$` };
+            }
+            if(text.includes('кости') || text.includes('кубик')) {
+                let sum = parseInt(text.match(/сумм[аы]\s+(\d+)/)?.[1]) || 7;
+                let fav = 0;
+                for(let i=1;i<=6;i++) for(let j=1;j<=6;j++) if(i+j===sum) fav++;
+                let prob = fav/36;
+                return { prob, formula: `$$P = \\frac{${fav}}{36} = ${prob.toFixed(6)}$$` };
+            }
+            if(text.includes('колод') || text.includes('карт')) {
+                let draw = parseInt(text.match(/вынима[ею]\s+(\d+)/)?.[1]) || 3;
+                let prob = 1 - C(32, draw)/C(36, draw);
+                return { prob, formula: `$$P(\\text{хотя бы один туз}) = 1 - \\frac{C_{32}^{${draw}}}{C_{36}^{${draw}}} = 1 - \\frac{${C(32,draw)}}{${C(36,draw)}} = ${prob.toFixed(6)}$$` };
+            }
+            if(text.includes('монет')) {
+                let n = parseInt(text.match(/броса[ею]\s+(\d+)/)?.[1]) || 10;
+                let k = parseInt(text.match(/(\d+)\s+орл/)?.[1]) || 5;
+                let prob = C(n, k) * Math.pow(0.5, n);
+                return { prob, formula: `$$P = C_{${n}}^{${k}} \\cdot (0.5)^{${n}} = \\frac{${C(n,k)}}{${Math.pow(2,n)}} = ${prob.toFixed(6)}$$` };
+            }
+            return null;
+        }
+
+        const calcTypeSelect = document.getElementById('calcType');
+        const dynamicDiv = document.getElementById('calcDynamicInputs');
+        
+        function updateDynamicInputs() {
+            const type = calcTypeSelect.value;
+            if(type === 'balls') {
+                dynamicDiv.innerHTML = `<div style="display:flex; gap:1rem; flex-wrap:wrap;"><input type="number" id="whiteBalls" placeholder="Белых (шт)" value="5" class="calc-input" style="flex:1;"><input type="number" id="blackBalls" placeholder="Черных (шт)" value="3" class="calc-input" style="flex:1;"><input type="number" id="drawBalls" placeholder="Вынимаем (шт)" value="2" class="calc-input" style="flex:1;"></div>`;
+            } else if(type === 'dice') {
+                dynamicDiv.innerHTML = `<input type="number" id="targetSum" placeholder="Целевая сумма очков" value="7" class="calc-input">`;
+            } else if(type === 'cards') {
+                dynamicDiv.innerHTML = `<div style="display:flex; gap:1rem;"><input type="number" id="cardsDraw" placeholder="Вынимаем карт" value="3" class="calc-input" style="flex:1;"><select id="cardsCond" class="calc-select" style="flex:2;"><option value="ace">Хотя бы один туз</option><option value="suit">Все одной масти</option></select></div>`;
+            } else if(type === 'coin') {
+                dynamicDiv.innerHTML = `<div style="display:flex; gap:1rem;"><input type="number" id="coinFlips" placeholder="Количество бросков" value="10" class="calc-input"><input type="number" id="coinHeads" placeholder="Количество орлов" value="5" class="calc-input"></div>`;
+            } else if(type === 'bernoulli') {
+                dynamicDiv.innerHTML = `<div style="display:flex; gap:1rem;"><input type="number" id="bernN" placeholder="n (всего)" value="10" class="calc-input"><input type="number" id="bernP" placeholder="p (вероятность)" step="0.01" value="0.5" class="calc-input"><input type="number" id="bernK" placeholder="k (успехов)" value="5" class="calc-input"></div>`;
+            } else if(type === 'bayes') {
+                dynamicDiv.innerHTML = `<div style="display:flex; gap:1rem; flex-wrap:wrap;"><input type="number" id="bayesP1" placeholder="P(H1)" value="0.4" step="0.01" class="calc-input" style="flex:1;"><input type="number" id="bayesPA1" placeholder="P(A|H1)" value="0.03" step="0.01" class="calc-input" style="flex:1;"><input type="number" id="bayesP2" placeholder="P(H2)" value="0.6" step="0.01" class="calc-input" style="flex:1;"><input type="number" id="bayesPA2" placeholder="P(A|H2)" value="0.02" step="0.01" class="calc-input" style="flex:1;"></div>`;
+            }
+        }
+        calcTypeSelect.addEventListener('change', updateDynamicInputs);
+        updateDynamicInputs();
+
+        function calculateByType() {
+            const type = calcTypeSelect.value;
+            let result = 0, formula = '';
+            if(type === 'balls') {
+                let w = +document.getElementById('whiteBalls').value, b = +document.getElementById('blackBalls').value, d = +document.getElementById('drawBalls').value;
+                result = C(w,d)/C(w+b,d);
+                formula = `$$P = \\frac{C_{${w}}^{${d}}}{C_{${w+b}}^{${d}}} = \\frac{${C(w,d)}}{${C(w+b,d)}} = ${result.toFixed(6)}$$`;
+            } else if(type === 'dice') {
+                let sum = +document.getElementById('targetSum').value;
+                let fav=0; for(let i=1;i<=6;i++) for(let j=1;j<=6;j++) if(i+j===sum) fav++;
+                result = fav/36;
+                formula = `$$P = \\frac{${fav}}{36} = ${result.toFixed(6)}$$`;
+            } else if(type === 'cards') {
+                let draw = +document.getElementById('cardsDraw').value;
+                let cond = document.getElementById('cardsCond').value;
+                if(cond === 'ace') {
+                    result = 1 - C(32,draw)/C(36,draw);
+                    formula = `$$P(\\text{хотя бы один туз}) = 1 - \\frac{C_{32}^{${draw}}}{C_{36}^{${draw}}} = 1 - \\frac{${C(32,draw)}}{${C(36,draw)}} = ${result.toFixed(6)}$$`;
+                } else {
+                    result = 4*C(13,draw)/C(36,draw);
+                    formula = `$$P(\\text{все одной масти}) = \\frac{4\\cdot C_{13}^{${draw}}}{C_{36}^{${draw}}} = \\frac{${4*C(13,draw)}}{${C(36,draw)}} = ${result.toFixed(6)}$$`;
+                }
+            } else if(type === 'coin') {
+                let n = +document.getElementById('coinFlips').value, k = +document.getElementById('coinHeads').value;
+                result = C(n,k)*Math.pow(0.5,n);
+                formula = `$$P = C_{${n}}^{${k}} \\cdot (0.5)^{${n}} = \\frac{${C(n,k)}}{${Math.pow(2,n)}} = ${result.toFixed(6)}$$`;
+            } else if(type === 'bernoulli') {
+                let n = +document.getElementById('bernN').value, p = +document.getElementById('bernP').value, k = +document.getElementById('bernK').value;
+                result = C(n,k)*Math.pow(p,k)*Math.pow(1-p,n-k);
+                formula = `$$P = C_{${n}}^{${k}} \\cdot ${p}^{${k}} \\cdot ${(1-p).toFixed(3)}^{${n-k}} = ${result.toFixed(6)}$$`;
+            } else if(type === 'bayes') {
+                let pH1 = +document.getElementById('bayesP1').value, pA1 = +document.getElementById('bayesPA1').value, pH2 = +document.getElementById('bayesP2').value, pA2 = +document.getElementById('bayesPA2').value;
+                let pA = pH1*pA1 + pH2*pA2;
+                result = (pH1*pA1)/pA;
+                formula = `$$P(A) = ${pH1}\\cdot${pA1} + ${pH2}\\cdot${pA2} = ${pA.toFixed(6)}$$ $$P(H_1|A) = \\frac{${pH1}\\cdot${pA1}}{${pA.toFixed(6)}} = ${result.toFixed(6)}$$`;
+            }
+            
+            const calcResultDiv = document.getElementById('calcResult');
+            calcResultDiv.innerHTML = `<div style="font-size:1.2rem; font-weight:600; color:var(--text-main); margin-bottom: 1rem;">Вероятность: ${result.toFixed(6)}</div><div style="font-weight:500; margin-bottom: 0.5rem;">Решение:</div>${formula}`;
+            setTimeout(() => renderMath(), 50);
+        }
+
+        document.getElementById('calcBtn').addEventListener('click', () => {
+            const text = document.getElementById('calcTextInput').value;
+            const parsed = parseProbability(text);
+            const calcResultDiv = document.getElementById('calcResult');
+            
+            if(parsed) {
+                calcResultDiv.innerHTML = `<div style="font-size:1.2rem; font-weight:600; color:var(--text-main); margin-bottom: 1rem;">Вероятность: ${parsed.prob.toFixed(6)}</div><div style="font-weight:500; margin-bottom: 0.5rem;">Решение:</div>${parsed.formula}`;
+            } else {
+                calcResultDiv.innerHTML = '<span style="color:#D32F2F;">Не удалось распознать задачу. Попробуйте описать ее иначе или используйте шаблоны ниже.</span>';
+            }
+            setTimeout(() => renderMath(), 50);
+        });
+        
+        document.getElementById('calcTypeBtn').addEventListener('click', calculateByType);
+
+        // Переключение вкладок
+        const tabs = document.querySelectorAll('.tab-btn');
+        const panes = document.querySelectorAll('.tab-pane');
+        tabs.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabId = btn.getAttribute('data-tab');
+                tabs.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                panes.forEach(pane => pane.classList.remove('active'));
+                document.getElementById(`${tabId}-tab`).classList.add('active');
+                setTimeout(() => renderMath(), 100);
+            });
+        });
+
+        // Инициализация
+        renderTopicTasks();
+        renderHintTasks();
+        setTimeout(() => renderMath(), 200);
+    </script>
+</body>
+</html>

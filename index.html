@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Теория вероятностей | Шпаргалки по теории вероятностей</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+    
+    <style>
+        /* Применение стилей "Тихая эстетика" из первого файла */
+        :root {
+            --bg-main: #F7F5F2; 
+            --card-bg: #FFFFFF;
+            --text-main: #1A1A1A;
+            --text-muted: #6B6863;
+            --accent: #2C3E35; 
+            --accent-light: #EAE5DC;
+            --border-color: #E0DDD7;
+            --shadow: 0 4px 15px rgba(0,0,0,0.03);
+            --transition: all 0.4s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        /* Navigation в стиле первого файла */
+        .navbar {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100% !important; /* На всю ширину */
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important; /* Лого влево, ссылки вправо */
+    align-items: center !important;
+    background: rgba(247, 245, 242, 0.95) !important;
+    backdrop-filter: blur(20px);
+    padding: 1.2rem 4rem !important; /* Отступы от краев экрана */
+    box-sizing: border-box !important;
+    z-index: 9999 !important;
+}
+
+.logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #1A1A1A;
+    text-decoration: none;
+    letter-spacing: -0.5px;
+    flex-shrink: 0 !important; /* Не даем логотипу сжиматься */
+}
+
+.nav-links {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    margin-left: auto !important; /* ЭТО ПРИНУДИТЕЛЬНО ТОЛКАЕТ КНОПКИ ВПРАВО */
+}
+
+.nav-links a {
+    text-decoration: none;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: #6B6863;
+    margin-left: 3rem !important; /* Расстояние МЕЖДУ кнопками */
+    transition: all 0.4s ease;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    position: relative;
+    padding-bottom: 4px;
+    white-space: nowrap !important;
+}
+
+.nav-links a:hover, 
+.nav-links a.active {
+    color: #1A1A1A !important;
+}
+
+/* Линия при наведении */
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 1px;
+    bottom: 0;
+    left: 0;
+    background-color: #1A1A1A;
+    transition: width 0.4s ease;
+}
+
+.nav-links a:hover::after,
+.nav-links a.active::after {
+    width: 100% !important;
+}
+        /* Main container */
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 3rem 2rem 5rem;
+        }
+
+        /* Hero section */
+        .hero {
+            text-align: center;
+            margin-bottom: 3.5rem;
+        }
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+        }
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            font-weight: 300;
+        }
+
+        /* Cards grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
+            gap: 2.5rem; /* Немного увеличил отступ для "воздуха" */
+        }
+
+        /* Карточки в стиле первого файла */
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+        }
+
+        .card-header {
+            padding: 2rem 2rem 1rem;
+            border-bottom: 1px solid #F0EDE8;
+        }
+
+        .card-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .formula-item {
+            margin-bottom: 1.2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #F0EDE8;
+        }
+        .formula-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .formula-name {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+        }
+
+        /* Контейнер формул */
+        .formula-math {
+            font-size: 1.1rem;
+            background: #FDFBF9;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            border: 1px solid #F0EDE8;
+            overflow-x: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .formula-math::-webkit-scrollbar {
+            height: 4px;
+        }
+        .formula-math::-webkit-scrollbar-thumb {
+            background: #E0DDD7;
+            border-radius: 4px;
+        }
+
+        /* Кнопка скопировать в стиле первого файла */
+        .copy-btn {
+            background: var(--accent-light);
+            border: none;
+            color: var(--text-main);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            padding: 0.5rem;
+            border-radius: 6px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+        }
+        .copy-btn:hover {
+            background: var(--accent);
+            color: #FFFFFF;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 5rem;
+            padding: 2.5rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            font-size: 0.85rem;
+        }
+
+        footer p {
+            margin-bottom: 0.3rem;
+        }
+
+        @media (max-width: 720px) {
+            .container { padding: 2rem 1rem; }
+            .hero h1 { font-size: 2.2rem; }
+            .grid { gap: 1.5rem; }
+            .nav-links { display: none; } /* Скрытие меню на мобилках как в первом файле, если не адаптировано */
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+            <a href="#" class="logo">Theoria.</a>
+            <div class="nav-links">
+                <a href="#" class="active">Шпаргалки</a>
+                <a href="simulations.html">Симуляции</a>
+                <a href="mindmap.html">Карта понятий</a>
+                <a href="practice.html">Практикум</a>
+                <a href="applications.html">Применение</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="hero">
+            <h1>📐 Шпаргалки по формулам</h1>
+            <p>Все основные формулы из курса «Теория вероятностей и математическая статистика»</p>
+        </div>
+        <div class="grid" id="formulas-grid"></div>
+        <footer>
+            <p>© 2026 Theoria. Эстетика точных наук.</p>
+            <p>Авторы: Ананьев Максим Андреевич, Лукин Артем Владиславович, Яковлева Ксения Александровна</p>
+        </footer>
+    </main>
+
+    <script>
+        const formulasData = [
+            { title: "Комбинаторика", formulas: [
+                { name: "Перестановки", tex: "P_n = n!" },
+                { name: "Размещения", tex: "A_n^k = \\frac{n!}{(n-k)!}" },
+                { name: "Сочетания", tex: "C_n^k = \\frac{n!}{k!(n-k)!}" },
+                { name: "Сочетания с повторениями", tex: "\\bar{C}_n^k = C_{n+k-1}^k" },
+                { name: "Перестановки с повторениями", tex: "P_n(n_1,\\dots,n_k) = \\frac{n!}{n_1! \\cdots n_k!}" }
+            ]},
+            { title: "Дискретные случайные величины", formulas: [
+                { name: "Математическое ожидание", tex: "M(X) = \\sum x_i p_i" },
+                { name: "Дисперсия (определение)", tex: "D(X) = \\sum (x_i - M(X))^2 p_i" },
+                { name: "Дисперсия (формула)", tex: "D(X) = M(X^2) - [M(X)]^2" },
+                { name: "Среднее квадратическое", tex: "\\sigma(X) = \\sqrt{D(X)}" }
+            ]},
+            { title: "Биномиальное распределение", formulas: [
+                { name: "Вероятность", tex: "P_n(m) = C_n^m p^m q^{n-m}" },
+                { name: "Математическое ожидание", tex: "M(X) = np" },
+                { name: "Дисперсия", tex: "D(X) = npq" },
+                { name: "Наивероятнейшее число", tex: "np - q \\le k_0 \\le np + p" }
+            ]},
+            { title: "Распределение Пуассона", formulas: [
+                { name: "Вероятность", tex: "P(X=m) = \\frac{\\lambda^m e^{-\\lambda}}{m!}" },
+                { name: "Математическое ожидание", tex: "M(X) = \\lambda" },
+                { name: "Дисперсия", tex: "D(X) = \\lambda" },
+                { name: "Условие применимости", tex: "p < 0.1,\\; np < 10" }
+            ]},
+            { title: "Геометрическое распределение", formulas: [
+                { name: "Вероятность", tex: "P(X=k) = q^{k-1}p,\\; k=1,2,\\dots" },
+                { name: "Математическое ожидание", tex: "M(X) = \\frac{1}{p}" },
+                { name: "Дисперсия", tex: "D(X) = \\frac{q}{p^2}" }
+            ]},
+            { title: "Гипергеометрическое распределение", formulas: [
+                { name: "Вероятность", tex: "P(X=m) = \\frac{C_M^m C_{N-M}^{n-m}}{C_N^n}" },
+                { name: "Математическое ожидание", tex: "M(X) = n\\frac{M}{N}" },
+                { name: "Дисперсия", tex: "D(X) = n\\frac{M}{N}\\left(1-\\frac{M}{N}\\right)\\frac{N-n}{N-1}" }
+            ]},
+            { title: "Непрерывные случайные величины", formulas: [
+                { name: "Плотность", tex: "f(x) = F'(x)" },
+                { name: "Функция распределения", tex: "F(x) = \\int_{-\\infty}^{x} f(t) dt" },
+                { name: "Математическое ожидание", tex: "M(X) = \\int_{-\\infty}^{\\infty} x f(x) dx" },
+                { name: "Дисперсия", tex: "D(X) = \\int_{-\\infty}^{\\infty} (x-M(X))^2 f(x) dx" }
+            ]},
+            { title: "Равномерное распределение", formulas: [
+                { name: "Плотность", tex: "f(x) = \\frac{1}{b-a},\\; x\\in[a,b]" },
+                { name: "Функция распределения", tex: "F(x) = \\frac{x-a}{b-a}" },
+                { name: "Математическое ожидание", tex: "M(X) = \\frac{a+b}{2}" },
+                { name: "Дисперсия", tex: "D(X) = \\frac{(b-a)^2}{12}" }
+            ]},
+            { title: "Показательное (экспоненциальное)", formulas: [
+                { name: "Плотность", tex: "f(x) = \\lambda e^{-\\lambda x},\\; x\\ge 0" },
+                { name: "Функция распределения", tex: "F(x) = 1 - e^{-\\lambda x}" },
+                { name: "Математическое ожидание", tex: "M(X) = \\frac{1}{\\lambda}" },
+                { name: "Дисперсия", tex: "D(X) = \\frac{1}{\\lambda^2}" }
+            ]},
+            { title: "Нормальное распределение (Гаусса)", formulas: [
+                { name: "Плотность", tex: "f(x) = \\frac{1}{\\sigma\\sqrt{2\\pi}} e^{-\\frac{(x-a)^2}{2\\sigma^2}}" },
+                { name: "Математическое ожидание", tex: "M(X) = a" },
+                { name: "Дисперсия", tex: "D(X) = \\sigma^2" },
+                { name: "Вероятность попадания", tex: "P(\\alpha < X < \\beta) = \\Phi_0\\!\\left(\\frac{\\beta-a}{\\sigma}\\right) - \\Phi_0\\!\\left(\\frac{\\alpha-a}{\\sigma}\\right)" },
+                { name: "Правило трёх сигм", tex: "P(|X-a|<3\\sigma) \\approx 0.9973" }
+            ]},
+            { title: "Функция Лапласа", formulas: [
+                { name: "Интеграл вероятности", tex: "\\Phi_0(x) = \\frac{1}{\\sqrt{2\\pi}} \\int_0^x e^{-t^2/2} dt" },
+                { name: "Свойство нечётности", tex: "\\Phi_0(-x) = -\\Phi_0(x),\\; \\Phi_0(\\infty)=0.5" }
+            ]},
+            { title: "Закон больших чисел / ЦПТ", formulas: [
+                { name: "Неравенство Чебышёва", tex: "P(|X-M(X)|\\ge\\varepsilon) \\le \\frac{D(X)}{\\varepsilon^2}" },
+                { name: "Центральная предельная теорема", tex: "\\frac{\\bar{X} - a}{\\sigma/\\sqrt{n}} \\xrightarrow{d} N(0,1)" }
+            ]}
+        ];
+
+        function copyToClipboard(text, btnElement) {
+            navigator.clipboard.writeText(text).then(() => {
+                const originalIcon = btnElement.innerHTML;
+                btnElement.innerHTML = '✅';
+                setTimeout(() => {
+                    btnElement.innerHTML = originalIcon;
+                }, 1200);
+            }).catch(() => {
+                alert('Не удалось скопировать');
+            });
+        }
+
+        function renderFormulas() {
+            const grid = document.getElementById('formulas-grid');
+            if (!grid) return;
+
+            grid.innerHTML = formulasData.map(section => `
+                <div class="card">
+                    <div class="card-header">
+                        <h2>${section.title}</h2>
+                    </div>
+                    <div class="card-body">
+                        ${section.formulas.map(form => `
+                            <div class="formula-item">
+                                <div class="formula-name">${form.name}</div>
+                                <div class="formula-math">
+                                    <span>$\\displaystyle ${form.tex}$</span>
+                                    <button class="copy-btn" data-tex="${form.tex.replace(/\\/g, '\\\\')}">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            document.querySelectorAll('.copy-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const tex = btn.getAttribute('data-tex');
+                    if (tex) copyToClipboard(tex, btn);
+                });
+            });
+
+            if (window.MathJax) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', renderFormulas);
+    </script>
+</body>
+</html>
